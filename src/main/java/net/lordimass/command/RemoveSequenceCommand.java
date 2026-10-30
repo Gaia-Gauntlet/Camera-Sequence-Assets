@@ -12,7 +12,7 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import net.lordimass.assets.CameraSequenceAsset;
+import net.lordimass.assets.sequences.SequenceAsset;
 import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
@@ -38,7 +38,7 @@ public class RemoveSequenceCommand extends AbstractPlayerCommand {
         final var playerComponent = store.getComponent(ref, Player.getComponentType());
         assert playerComponent != null;
 
-        var seqStore = CameraSequenceAsset.getAssetStore();
+        var seqStore = SequenceAsset.getAssetStore();
 
         final String seqName = nameArg.get(context).trim();
         if (seqName.contains("..")) {

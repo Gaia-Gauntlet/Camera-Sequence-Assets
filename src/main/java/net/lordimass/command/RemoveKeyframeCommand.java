@@ -14,7 +14,8 @@ import com.hypixel.hytale.server.core.modules.singleplayer.SingleplayerModule;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import net.lordimass.assets.CameraSequenceAsset;
+import net.lordimass.assets.sequences.CameraSequenceAsset;
+import net.lordimass.assets.sequences.SequenceAsset;
 import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
@@ -22,9 +23,9 @@ import java.nio.file.Path;
 import java.util.Map;
 
 public class RemoveKeyframeCommand extends AbstractPlayerCommand {
-        private final RequiredArg<CameraSequenceAsset> sequenceArg = withRequiredArg(
+        private final RequiredArg<SequenceAsset> sequenceArg = withRequiredArg(
             "sequence", "The ID of the camera sequence asset to append the frame to",
-            new AssetArgumentType<>("CameraAsset", CameraSequenceAsset.class, "Camera Asset")
+            new AssetArgumentType<>("CameraAsset", SequenceAsset.class, "Camera Asset")
         );
 
     private final RequiredArg<Integer> keyFrameArg = withRequiredArg(
@@ -43,17 +44,23 @@ public class RemoveKeyframeCommand extends AbstractPlayerCommand {
         @NonNull PlayerRef playerRef,
         @NonNull World world
     ) {
-        var seq = sequenceArg.get(context);
+        var uncheckedSeq = sequenceArg.get(context);
 
-        if (seq == null) {
+        if (uncheckedSeq == null) {
             context.sendMessage(
                 Message.raw("Couldn't find camera sequence '" + sequenceArg.get(context) + "'")
                     .color(Color.RED));
             return;
         }
+        if (!(uncheckedSeq instanceof CameraSequenceAsset seq)) {
+            context.sendMessage(
+                Message.raw("Sequence '" + sequenceArg.get(context) + "' is not a camera sequence.")
+                    .color(Color.RED));
+            return;
+        }
 
         // get the store
-        var seqStore = CameraSequenceAsset.getAssetStore();
+        var seqStore = SequenceAsset.getAssetStore();
         var seqName = seq.getId();
         var existingPackName = seqStore.getAssetMap().getAssetPack(seqName);
         assert existingPackName != null;
@@ -64,7 +71,7 @@ public class RemoveKeyframeCommand extends AbstractPlayerCommand {
         }
 
         var frame = keyFrameArg.get(context);
-        var frames = seq.getCameraKeyframes();
+        var frames = seq.getKeyframes();
         if (frame >= frames.length || frame < 0) {
             context.sendMessage(Message.raw("Frame " + frame + " out of range for sequence of length " + frames.length));
             return;

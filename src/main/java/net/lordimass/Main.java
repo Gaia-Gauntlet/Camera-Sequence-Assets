@@ -1,12 +1,18 @@
 package net.lordimass;
 
 import com.creditor.Creditor;
+import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import com.hypixel.hytale.builtin.triggervolumes.effect.TriggerEffect;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
+import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
-import net.lordimass.assets.CameraSequenceAsset;
-import net.lordimass.assets.DepthOfFieldSettingsAsset;
+import net.lordimass.assets.*;
+import net.lordimass.assets.keyframes.CameraKeyframe;
+import net.lordimass.assets.keyframes.SequenceKeyframe;
+import net.lordimass.assets.sequences.CameraSequenceAsset;
+import net.lordimass.assets.sequences.SequenceAsset;
 import net.lordimass.command.CameraSequenceCommand;
 import net.lordimass.tvEffects.TriggerCameraSequenceEffect;
 
@@ -30,12 +36,25 @@ public class Main extends JavaPlugin {
     @Override
     protected void setup() {
         LOGGER.at(Level.INFO).log("Setting up Camera Sequence Assets!");
-        CameraSequenceAsset.register(this);
+
+        this.getAssetRegistry().register(
+            HytaleAssetStore.builder(SequenceAsset.class, new DefaultAssetMap<>())
+                .setPath(SequenceAsset.ASSET_PATH)
+                .setCodec(SequenceAsset.CODEC)
+                .setKeyFunction(SequenceAsset::getId)
+                .build()
+        );
+
+        SequenceAsset.CODEC.register("CameraSequence", CameraSequenceAsset.class, CameraSequenceAsset.CODEC);
+
+        CameraKeyframe.CODEC.register("CameraKeyframe", CameraKeyframe.Keyframe.class, CameraKeyframe.Keyframe.CODEC);
+        CameraKeyframe.CODEC.register("CameraKeyframeLookingAt", CameraKeyframe.KeyframeLookingAt.class, CameraKeyframe.KeyframeLookingAt.CODEC);
+
         DepthOfFieldSettingsAsset.register(this);
+
         var commandRegistry = getCommandRegistry();
         commandRegistry.registerCommand(new CameraSequenceCommand());
         TriggerEffect.CODEC.register("TriggerCameraSequence", TriggerCameraSequenceEffect.class, TriggerCameraSequenceEffect.CODEC);
-
         Creditor.setup(this);
     }
 

@@ -18,8 +18,9 @@ import com.hypixel.hytale.server.core.modules.singleplayer.SingleplayerModule;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import net.lordimass.assets.CameraKeyframe;
-import net.lordimass.assets.CameraSequenceAsset;
+import net.lordimass.assets.keyframes.CameraKeyframe;
+import net.lordimass.assets.sequences.CameraSequenceAsset;
+import net.lordimass.assets.sequences.SequenceAsset;
 import net.lordimass.utils.PackUtils;
 import net.lordimass.utils.TransformUtils;
 import org.jspecify.annotations.NonNull;
@@ -62,7 +63,7 @@ public class NewCameraSequenceCommand extends AbstractPlayerCommand {
         final var playerComponent = store.getComponent(ref, Player.getComponentType());
         assert playerComponent != null;
 
-        var seqStore = CameraSequenceAsset.getAssetStore();
+        var seqStore = SequenceAsset.getAssetStore();
         final String packName = packArg.get(context);
         final AssetPack pack = PackUtils.resolveTargetPack(
             packName != null ? packName : "", playerComponent, context
@@ -83,7 +84,7 @@ public class NewCameraSequenceCommand extends AbstractPlayerCommand {
 
         final boolean overwrite = overwriteFlag.get(context);
 
-        if (CameraSequenceAsset.getAssetMap().getAsset(seqName) != null && !overwrite) {
+        if (SequenceAsset.getAssetMap().getAsset(seqName) != null && !overwrite) {
             playerRef.sendMessage(
                 Message.raw("Sequence " + seqName + " already exists!" +
                     "Supply the --overwrite flag to overwrite it with a fresh asset")

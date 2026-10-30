@@ -17,10 +17,11 @@ import com.hypixel.hytale.server.core.modules.singleplayer.SingleplayerModule;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import net.lordimass.assets.CameraKeyframe;
-import net.lordimass.assets.CameraKeyframe.Keyframe;
-import net.lordimass.assets.CameraSequenceAsset;
+import net.lordimass.assets.keyframes.CameraKeyframe;
+import net.lordimass.assets.keyframes.CameraKeyframe.Keyframe;
+import net.lordimass.assets.sequences.CameraSequenceAsset;
 import net.lordimass.assets.DepthOfFieldSettingsAsset;
+import net.lordimass.assets.sequences.SequenceAsset;
 import net.lordimass.utils.TransformUtils;
 
 import javax.annotation.Nonnull;
@@ -29,7 +30,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 public class NewKeyframeCommand extends AbstractPlayerCommand {
-    final RequiredArg<CameraSequenceAsset> sequenceArg;
+    final RequiredArg<SequenceAsset> sequenceArg;
     final OptionalArg<String> titleArg;
     final OptionalArg<String> notesArg;
     final OptionalArg<Float> durationArg;
@@ -43,7 +44,7 @@ public class NewKeyframeCommand extends AbstractPlayerCommand {
         super("keyframe", "Append a new frame to a camera sequence at your current position.");
 
         this.sequenceArg = withRequiredArg("sequence", "The ID of the camera sequence asset to append the frame to",
-                new AssetArgumentType<>("CameraAsset", CameraSequenceAsset.class,
+                new AssetArgumentType<>("CameraAsset", SequenceAsset.class,
                         "Camera Asset")
         );
         this.titleArg = withOptionalArg(
@@ -79,17 +80,23 @@ public class NewKeyframeCommand extends AbstractPlayerCommand {
             @Nonnull Ref<EntityStore> ref, @Nonnull PlayerRef playerRef,
             @Nonnull World world) {
 
-        var seq = sequenceArg.get(context);
+        var uncheckedSeq = sequenceArg.get(context);
 
-        if (seq == null) {
+        if (uncheckedSeq == null) {
             context.sendMessage(
                     Message.raw("Couldn't find camera sequence '" + sequenceArg.get(context) + "'")
                             .color(Color.RED));
             return;
         }
+        if (!(uncheckedSeq instanceof CameraSequenceAsset seq)) {
+            context.sendMessage(
+                Message.raw("Sequence '" + sequenceArg.get(context) + "' is not a camera sequence.")
+                    .color(Color.RED));
+            return;
+        }
 
         // get the store
-        var seqStore = CameraSequenceAsset.getAssetStore();
+        var seqStore = SequenceAsset.getAssetStore();
         var seqName = seq.getId();
         var existingPackName = seqStore.getAssetMap().getAssetPack(seqName);
         assert existingPackName != null;
@@ -110,7 +117,7 @@ public class NewKeyframeCommand extends AbstractPlayerCommand {
         var frame = keyFrameArg.get(context);
         var newKeyframe = new Keyframe(transform, title, notes, duration, easing, fov, dof);
         if (frame != null) {
-            CameraKeyframe[] frames = seq.getCameraKeyframes();
+            var frames = seq.getKeyframes();
             if (frame >= frames.length || frame < 0) {
                 context.sendMessage(Message.raw("Frame " + frame + " out of range for sequence of length " + frames.length));
                 return;
@@ -126,14 +133,14 @@ public class NewKeyframeCommand extends AbstractPlayerCommand {
                         SingleplayerModule.isOwner(playerRef));
                 context.sendMessage(
                         Message.translation("server.command.camerasequence.new.keyframe.success")
-                                .param("keyframe", frame != null ? frame : seq.getCameraKeyframes().length-1)
+                                .param("keyframe", frame != null ? frame : seq.getKeyframes().length-1)
                                 .param("assetName", seqName).color(Color.GREEN)
                 );
             } catch (Exception exception) {
                 LOGGER.atSevere().withCause(exception).log("Failed to save effect preset '%s'", seqName);
                 context.sendMessage(
                         Message.translation("server.command.camerasequence.new.keyframe.fail")
-                                .param("keyframe", frame != null ? frame : seq.getCameraKeyframes().length-1)
+                                .param("keyframe", frame != null ? frame : seq.getKeyframes().length-1)
                                 .param("assetName", seqName)
                                 .param("reason", exception.getMessage()).color(Color.RED)
                 );

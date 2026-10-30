@@ -8,19 +8,21 @@ import com.hypixel.hytale.server.core.command.system.arguments.system.OptionalAr
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.arguments.types.AssetArgumentType;
-import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractTargetPlayerCommand;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import net.lordimass.assets.keyframes.SequenceKeyframe;
+import net.lordimass.assets.sequences.GlobalSequenceAsset;
+import net.lordimass.assets.sequences.PlayerSequenceAsset;
+import net.lordimass.assets.sequences.SequenceAsset;
 
-import net.lordimass.assets.CameraKeyframe;
-import net.lordimass.assets.CameraSequenceAsset;
 import java.awt.*;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class CameraSequenceCommand extends AbstractTargetPlayerCommand {
-    final RequiredArg<CameraSequenceAsset> sequenceArg;
+    final RequiredArg<SequenceAsset> sequenceArg;
 
     final OptionalArg<Integer> keyFrameArg;
 
@@ -29,7 +31,7 @@ public class CameraSequenceCommand extends AbstractTargetPlayerCommand {
         this.addAliases("cinematic");
 
         this.sequenceArg = withRequiredArg("sequence", "The ID of the camera sequence asset to play back",
-                new AssetArgumentType<>("CameraAsset", CameraSequenceAsset.class,
+                new AssetArgumentType<>("CameraAsset", SequenceAsset.class,
                         "Camera Asset"));
 
         this.keyFrameArg = withOptionalArg("Keyframe", "Keyframe to jump to", ArgTypes.INTEGER);
@@ -39,48 +41,51 @@ public class CameraSequenceCommand extends AbstractTargetPlayerCommand {
     }
 
     @Override
-    protected void execute(@Nonnull CommandContext commandContext, @Nonnull Ref<EntityStore> sourceRef,
+    protected void execute(@Nonnull CommandContext commandContext, @Nullable Ref<EntityStore> sourceRef,
             @Nonnull Ref<EntityStore> ref, @Nonnull PlayerRef playerRef,
             @Nonnull World world, @Nonnull Store<EntityStore> store) {
 
-        var seq = sequenceArg.get(commandContext);
-        if (seq == null) {
+        var originalSeq = sequenceArg.get(commandContext);
+        if (originalSeq == null) {
             commandContext.sendMessage(
                     Message.raw("Couldn't find camera sequence '" + sequenceArg.get(commandContext).getId() + "'")
                             .color(Color.RED));
             return;
         }
+        var seq = originalSeq.clone();
 
         var frame = keyFrameArg.get(commandContext);
 
-        if (frame != null) {
-            // play the single frame instead
+        Runnable onComplete = () -> {
+            commandContext.sendMessage(Message.raw("Camera sequence completed").color(Color.GREEN));
+        };
 
-            var frames = seq.getCameraKeyframes();
+        if (frame != null) { // play from the single frame instead
+            var frames = seq.getKeyframes();
             if (frame < 0 || frame >= frames.length) {
                 commandContext.sendMessage(
                         Message.raw("Frame " + frame + " is out of range! Max is " + frames.length));
                 return;
             }
-            
-            var newSeq = seq.clone();
-            CameraKeyframe[] reorderedFrames = new CameraKeyframe[frames.length - frame];
+
+            SequenceKeyframe[] reorderedFrames = new SequenceKeyframe[frames.length - frame];
             System.arraycopy(frames, frame, reorderedFrames, 0, reorderedFrames.length);
-            newSeq.setCameraKeyframes(reorderedFrames);
+            seq.setKeyframes(reorderedFrames);
 
             commandContext.sendMessage(
-                    Message.raw("Playing sequence '" + sequenceArg.get(commandContext).getId() + "' from frame " + frame + "."));
-            newSeq.play(playerRef, _ -> {
-                commandContext.sendMessage(Message.raw("Camera sequence completed").color(Color.GREEN));
-            });
+                    Message.raw("Playing sequence '" + sequenceArg.get(commandContext).getId() + "' from frame " + frame + " to player."));
             return;
+        } else {
+            commandContext.sendMessage(
+                Message.raw("Playing sequence '" + sequenceArg.get(commandContext).getId() + "' to player."));
         }
 
-        commandContext.sendMessage(
-                Message.raw("Playing sequence '" + sequenceArg.get(commandContext).getId() + "' to player."));
-
-        seq.play(playerRef, _ -> {
-            commandContext.sendMessage(Message.raw("Camera sequence completed").color(Color.GREEN));
-        });
+        if (seq instanceof PlayerSequenceAsset playerSeq) {
+            playerSeq.play(playerRef, onComplete);
+        } else if (seq instanceof GlobalSequenceAsset globalSeq) {
+            globalSeq.play(onComplete);
+        } else {
+            commandContext.sendMessage(Message.raw("Unsupported sequence type!"));
+        }
     }
 }

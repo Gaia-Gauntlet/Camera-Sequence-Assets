@@ -1,7 +1,8 @@
 {
+  "Type": "CameraSequence",
   "Keyframes": [
     {
-      "Id": "Keyframe",
+      "Id": "CameraKeyframe",
       "RelativeToPlayer": true,
       "Position": {
         "X": 4,
@@ -16,7 +17,7 @@
       "DepthOfFieldSettings": "TestDepthOfField"
     },
     {
-      "Id": "Keyframe",
+      "Id": "CameraKeyframe",
       "RelativeToPlayer": true,
       "Position": {
         "X": 0,
@@ -32,7 +33,7 @@
       "DepthOfFieldSettings": "TestDepthOfField"
     },
     {
-      "Id": "Keyframe",
+      "Id": "CameraKeyframe",
       "RelativeToPlayer": true,
       "Position": {
         "X": -4,
@@ -48,7 +49,7 @@
       "DepthOfFieldSettings": "TestDepthOfField"
     },
     {
-      "Id": "Keyframe",
+      "Id": "CameraKeyframe",
       "RelativeToPlayer": true,
       "Easing": "BackIn",
       "Look": {
@@ -64,7 +65,7 @@
       "DepthOfFieldSettings": "TestDepthOfField"
     },
     {
-      "Id": "Keyframe",
+      "Id": "CameraKeyframe",
       "RelativeToPlayer": true,
       "Position": {
         "X": 4,
@@ -79,7 +80,7 @@
       "DepthOfFieldSettings": "TestDepthOfField"
     },
     {
-      "Id": "Keyframe",
+      "Id": "CameraKeyframe",
       "Look": {
         "Yaw": 180
       },

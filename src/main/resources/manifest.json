@@ -14,7 +14,7 @@
         }
     ],
     "Website": "https://modifold.com/mod/camera-sequence-assets",
-    "ServerVersion": "^0.6.0",
+    "ServerVersion": "^0.7.0",
     "Dependencies": {
         "Hytale:AssetModule": "*"
     },

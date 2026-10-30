@@ -1,24 +1,20 @@
-package net.lordimass.assets;
+package net.lordimass.assets.sequences;
 
-import com.hypixel.hytale.assetstore.AssetExtraInfo;
 import com.hypixel.hytale.assetstore.AssetKeyValidator;
-import com.hypixel.hytale.assetstore.AssetRegistry;
-import com.hypixel.hytale.assetstore.AssetStore;
 import com.hypixel.hytale.assetstore.codec.AssetBuilderCodec;
-import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
-import com.hypixel.hytale.assetstore.map.JsonAssetWithMap;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
+import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.codec.validation.ValidatorCache;
 import com.hypixel.hytale.codec.validation.Validators;
 import com.hypixel.hytale.math.vector.Rotation3f;
-import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
 import com.hypixel.hytale.server.core.modules.camera.CameraKeyframeBuilder;
 import com.hypixel.hytale.server.core.modules.camera.CameraSequenceBuilder;
-import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import lombok.Getter;
+import net.lordimass.assets.keyframes.CameraKeyframe;
+import net.lordimass.assets.keyframes.SequenceKeyframe;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 
@@ -26,53 +22,48 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.function.Consumer;
 
 import static net.lordimass.utils.UiUtils.hideUI;
 import static net.lordimass.utils.UiUtils.showUI;
 
-public class CameraSequenceAsset implements JsonAssetWithMap<String, DefaultAssetMap<String, CameraSequenceAsset>> {
-    public static final String ASSET_PATH = "CameraSequence/CameraSequence";
+public class CameraSequenceAsset extends PlayerSequenceAsset {
 
-    private static AssetStore<String, CameraSequenceAsset, DefaultAssetMap<String, CameraSequenceAsset>> assetStore;
-
-    @Nonnull public static final AssetBuilderCodec<String, @NotNull CameraSequenceAsset> CODEC =
-        AssetBuilderCodec.builder(
+    @Nonnull public static final BuilderCodec<@NotNull CameraSequenceAsset> CODEC =
+        BuilderCodec.builder(
             CameraSequenceAsset.class,
             CameraSequenceAsset::new,
-            Codec.STRING,
-            (asset, id) -> asset.id = id,
-            CameraSequenceAsset::getId,
-            (asset, data) -> asset.data = data,
-            asset -> asset.data
+            PlayerSequenceAsset.ABSTRACT_CODEC
         )
-            .append(new KeyedCodec<>("Keyframes", new ArrayCodec<>(CameraKeyframe.CODEC, CameraKeyframe[]::new)),
-                (asset, keyframes) -> asset.cameraKeyframes = keyframes,
-                CameraSequenceAsset::getCameraKeyframes
+            .appendInherited(new KeyedCodec<>("Keyframes", new ArrayCodec<>(CameraKeyframe.CODEC, CameraKeyframe[]::new)),
+                (asset, keyframes) -> asset.keyframes = keyframes,
+                (asset) -> (CameraKeyframe[]) asset.getKeyframes(),
+                (a, b) -> a.keyframes = b.keyframes
             )
             .addValidator(Validators.nonNull())
             .addValidator(Validators.nonEmptyArray())
             .add()
-            .append(new KeyedCodec<>("BaseFov", Codec.FLOAT),
+            .appendInherited(new KeyedCodec<>("BaseFov", Codec.FLOAT),
                 (asset, baseFov) -> asset.baseFov = baseFov,
-                CameraSequenceAsset::getBaseFov
+                CameraSequenceAsset::getBaseFov,
+                (a, b) -> a.baseFov = b.baseFov
             )
             .add()
-            .append(new KeyedCodec<>("HideUi", Codec.BOOLEAN),
+            .appendInherited(new KeyedCodec<>("HideUi", Codec.BOOLEAN),
                 (asset, hideUI) -> asset.hideUI = hideUI,
-                CameraSequenceAsset::isHideUI
+                CameraSequenceAsset::isHideUI,
+                (a, b) -> a.hideUI = b.hideUI
             )
             .documentation("Whether the rest of the UI should be hidden while the effect is playing.")
             .add()
             .build();
 
-    private AssetExtraInfo.Data data;
-    @Getter private String id;
-    @Getter private CameraKeyframe[] cameraKeyframes = new CameraKeyframe[0];
+
     @Getter private Float baseFov;
     @Getter private boolean hideUI;
 
-    public CameraSequenceAsset() {}
+    public CameraSequenceAsset() {
+        super();
+    }
 
     public CameraSequenceAsset(
         @Nonnull String id,
@@ -80,60 +71,38 @@ public class CameraSequenceAsset implements JsonAssetWithMap<String, DefaultAsse
         @Nullable Float baseFov,
         boolean hideUI
     ) {
-        this.id = id;
+        super(id, initialKeyframe);
+
         this.baseFov = baseFov != null ? baseFov : 60;
-        this.cameraKeyframes = new CameraKeyframe[]{initialKeyframe};
         this.hideUI = hideUI;
     }
 
-    public static AssetStore<String, CameraSequenceAsset, DefaultAssetMap<String, CameraSequenceAsset>> getAssetStore() {
-        if (assetStore == null) assetStore = AssetRegistry.getAssetStore(CameraSequenceAsset.class);
-        return assetStore;
-    }
+    public CameraSequenceAsset(
+        @Nonnull String id,
+        @Nonnull CameraKeyframe[] keyframes,
+        @Nullable Float baseFov,
+        boolean hideUI
+    ) {
+        super(id, keyframes);
 
-    public static DefaultAssetMap<String, CameraSequenceAsset> getAssetMap() {
-        return getAssetStore().getAssetMap();
-    }
-
-    // Ok technically kinda goes against the whole idea of immutability but then again, the asset was made the only way to play animations T-T
-    public void setCameraKeyframes(CameraKeyframe[] cameraKeyframes) {
-        this.cameraKeyframes = cameraKeyframes == null ? new CameraKeyframe[0] : cameraKeyframes;
-    }
-
-    public static void register(JavaPlugin host) {
-        host.getAssetRegistry().register(
-            HytaleAssetStore.builder(CameraSequenceAsset.class, new DefaultAssetMap<>())
-                .setPath(ASSET_PATH)
-                .setCodec(CODEC)
-                .setKeyFunction(CameraSequenceAsset::getId)
-                .build()
-        );
-
-        CameraKeyframe.CODEC.register(
-            "Keyframe",
-            CameraKeyframe.Keyframe.class,
-            CameraKeyframe.Keyframe.CODEC);
-
-        CameraKeyframe.CODEC.register(
-            "KeyframeLookingAt",
-            CameraKeyframe.KeyframeLookingAt.class,
-            CameraKeyframe.KeyframeLookingAt.CODEC);
+        this.baseFov = baseFov != null ? baseFov : 60;
+        this.hideUI = hideUI;
     }
 
     /**
      * Build the camera sequence builder object with all the keyframes.
      * WARNING: If <code>HideUI</code> is enabled, this will not take effect here.
      */
-    public CameraSequenceBuilder buildSequenceBuilder(@Nullable PlayerRef playerRef, @Nullable Consumer<PlayerRef> onComplete) {
+    private CameraSequenceBuilder buildSequenceBuilder(@Nullable PlayerRef playerRef, @Nullable Runnable onComplete) {
         CameraSequenceBuilder seqBuilder = new CameraSequenceBuilder()
             .baseFov(baseFov)
             .onComplete((playerRef1) -> {
-                if (onComplete != null) onComplete.accept(playerRef1);
+                if (onComplete != null) onComplete.run();
                 showUI(playerRef1);
             });
 
         // Add keyframes
-        for (CameraKeyframe keyframe : cameraKeyframes) {
+        for (CameraKeyframe keyframe : (CameraKeyframe[]) keyframes) {
             Vector3d position = keyframe.isRelativeToPlayer() && playerRef != null
                 ? new Vector3d(playerRef.getTransform().getPosition()).add(keyframe.getPosition())
                 : keyframe.getPosition();
@@ -175,18 +144,17 @@ public class CameraSequenceAsset implements JsonAssetWithMap<String, DefaultAsse
         return seqBuilder.addFlag((byte)1).addFlag((byte)2).addFlag((byte)4);
     }
 
-    public static final ValidatorCache<String> VALIDATOR_CACHE = new ValidatorCache<>(new AssetKeyValidator<>(CameraSequenceAsset::getAssetStore));
-
+    public static final ValidatorCache<String> VALIDATOR_CACHE = new ValidatorCache<>(new AssetKeyValidator<>(SequenceAsset::getAssetStore));
 
     /**
      * Build the camera sequence builder object with all the keyframes.
      * WARNING: If <code>HideUI</code> is enabled, this will not take effect here.
      */
-    public CameraSequenceBuilder buildSequenceBuilder(@Nullable PlayerRef playerRef) {
+    private CameraSequenceBuilder buildSequenceBuilder(@Nullable PlayerRef playerRef) {
         return buildSequenceBuilder(playerRef, null);
     }
 
-    public void play(@Nonnull PlayerRef playerRef, @Nullable Consumer<PlayerRef> onComplete) {
+    public void play(@Nonnull PlayerRef playerRef, @Nullable Runnable onComplete) {
         if (hideUI) hideUI(playerRef);
         buildSequenceBuilder(playerRef, onComplete).sendTo(playerRef);
     }
@@ -196,25 +164,19 @@ public class CameraSequenceAsset implements JsonAssetWithMap<String, DefaultAsse
     }
 
     public void addKeyframe(CameraKeyframe keyframe) {
-        CameraKeyframe[] updated = Arrays.copyOf(cameraKeyframes, cameraKeyframes.length + 1);
-        updated[cameraKeyframes.length] = keyframe;
-        cameraKeyframes = updated;
+        CameraKeyframe[] updated = Arrays.copyOf((CameraKeyframe[]) keyframes, keyframes.length + 1);
+        updated[keyframes.length] = keyframe;
+        keyframes = updated;
     }
 
     public void removeKeyframe(int keyframe) {
-        cameraKeyframes[keyframe] = null;
-        var listFrames = new ArrayList(Arrays.stream(cameraKeyframes).toList());
+        keyframes[keyframe] = null;
+        var listFrames = new ArrayList(Arrays.stream(keyframes).toList());
         listFrames.remove(keyframe);
-        this.cameraKeyframes = (CameraKeyframe[]) listFrames.toArray(new CameraKeyframe[cameraKeyframes.length-1]);
+        this.keyframes = (CameraKeyframe[]) listFrames.toArray(new CameraKeyframe[keyframes.length-1]);
     }
 
     public CameraSequenceAsset clone() {
-        var seq = new CameraSequenceAsset();
-        seq.baseFov = baseFov;
-        seq.cameraKeyframes = Arrays.copyOf(cameraKeyframes, cameraKeyframes.length);
-        seq.data = data;
-        seq.hideUI = hideUI;
-        seq.id = id;        
-        return seq;
+        return new CameraSequenceAsset(id, (CameraKeyframe[]) keyframes, baseFov, hideUI);
     }
 }
