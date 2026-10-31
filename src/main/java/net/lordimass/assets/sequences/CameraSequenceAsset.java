@@ -144,8 +144,6 @@ public class CameraSequenceAsset extends PlayerSequenceAsset {
         return seqBuilder.addFlag((byte)1).addFlag((byte)2).addFlag((byte)4);
     }
 
-    public static final ValidatorCache<String> VALIDATOR_CACHE = new ValidatorCache<>(new AssetKeyValidator<>(SequenceAsset::getAssetStore));
-
     /**
      * Build the camera sequence builder object with all the keyframes.
      * WARNING: If <code>HideUI</code> is enabled, this will not take effect here.
@@ -157,10 +155,6 @@ public class CameraSequenceAsset extends PlayerSequenceAsset {
     public void play(@Nonnull PlayerRef playerRef, @Nullable Runnable onComplete) {
         if (hideUI) hideUI(playerRef);
         buildSequenceBuilder(playerRef, onComplete).sendTo(playerRef);
-    }
-
-    public void play(@Nonnull PlayerRef playerRef) {
-        play(playerRef, null);
     }
 
     public void addKeyframe(CameraKeyframe keyframe) {

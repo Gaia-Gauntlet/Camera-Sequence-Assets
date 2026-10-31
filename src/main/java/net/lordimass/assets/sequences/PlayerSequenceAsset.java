@@ -2,6 +2,7 @@ package net.lordimass.assets.sequences;
 
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
 import net.lordimass.assets.keyframes.SequenceKeyframe;
 
 import javax.annotation.Nonnull;
@@ -27,7 +28,9 @@ public abstract class PlayerSequenceAsset extends SequenceAsset {
 
     public abstract void play(@Nonnull PlayerRef playerRef, @Nullable Runnable onComplete);
 
-    public void play(PlayerRef playerRef) {
-        play(playerRef, null);;
-    };
+    public void play(@Nonnull World world, @Nullable Runnable onComplete) {
+        for (PlayerRef playerRef : world.getPlayerRefs()) {
+            play(playerRef, onComplete);
+        }
+    }
 }

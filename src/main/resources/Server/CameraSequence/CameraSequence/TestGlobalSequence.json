@@ -1,0 +1,17 @@
+{
+  "Type": "GlobalSequence",
+  "Keyframes": [
+    {
+      "Id": "GlobalMessageKeyframe",
+      "Message": "Hello world?"
+    },
+    {
+      "Id": "GlobalDelayKeyframe",
+      "Duration": 1
+    },
+    {
+      "Id": "GlobalMessageKeyframe",
+      "Message": "Hello world!"
+    }
+  ]
+}

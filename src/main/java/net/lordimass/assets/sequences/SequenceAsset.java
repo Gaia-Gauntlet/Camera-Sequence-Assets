@@ -1,6 +1,7 @@
 package net.lordimass.assets.sequences;
 
 import com.hypixel.hytale.assetstore.AssetExtraInfo;
+import com.hypixel.hytale.assetstore.AssetKeyValidator;
 import com.hypixel.hytale.assetstore.AssetRegistry;
 import com.hypixel.hytale.assetstore.AssetStore;
 import com.hypixel.hytale.assetstore.codec.AssetBuilderCodec;
@@ -13,17 +14,27 @@ import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.codec.lookup.CodecMapCodec;
+import com.hypixel.hytale.codec.validation.ValidatorCache;
 import com.hypixel.hytale.codec.validation.Validators;
+import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
+import jdk.jshell.spi.ExecutionControl;
 import lombok.Getter;
 import net.lordimass.assets.keyframes.CameraKeyframe;
+import net.lordimass.assets.keyframes.GlobalSequenceContext;
 import net.lordimass.assets.keyframes.SequenceKeyframe;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public abstract class SequenceAsset implements JsonAssetWithMap<String, DefaultAssetMap<String, SequenceAsset>> {
+    public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
+
     public static final String ASSET_PATH = "CameraSequence/CameraSequence";
 
     private static AssetStore<String, SequenceAsset, DefaultAssetMap<String, SequenceAsset>> assetStore;
@@ -49,6 +60,8 @@ public abstract class SequenceAsset implements JsonAssetWithMap<String, DefaultA
             .addValidator(Validators.nonEmptyArray())
             .add()
             .build();
+
+    public static final ValidatorCache<String> VALIDATOR_CACHE = new ValidatorCache<>(new AssetKeyValidator<>(SequenceAsset::getAssetStore));
 
     AssetExtraInfo.Data data;
     @Getter String id;
@@ -92,7 +105,28 @@ public abstract class SequenceAsset implements JsonAssetWithMap<String, DefaultA
         this.keyframes = keyframes;
     }
 
-    public SequenceAsset clone() {
-        return null;
+    public void play(@Nonnull World world, @Nullable PlayerRef playerRef, @Nullable Runnable onComplete) {
+        if (this instanceof PlayerSequenceAsset playerSeq) {
+            if (playerRef == null) playerSeq.play(world, onComplete);
+            else playerSeq.play(playerRef, onComplete);
+        }
+
+        else if (this instanceof GlobalSequenceAsset globalSeq) {
+            globalSeq.play(new GlobalSequenceContext(world, playerRef), onComplete);
+        }
+
+        else {
+            if (playerRef != null) {
+                playerRef.sendMessage(Message.raw("Unsupported sequence type!"));
+            } else {
+                LOGGER.atWarning().log("Couldn't play unsupported camera sequence type!");
+            }
+        }
     }
+
+    public void play(@Nonnull World world, @Nullable PlayerRef playerRef) {
+        play(world, playerRef, null);
+    }
+
+    public abstract SequenceAsset clone();
 }

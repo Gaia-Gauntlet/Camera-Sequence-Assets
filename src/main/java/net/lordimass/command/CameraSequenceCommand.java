@@ -4,6 +4,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
+import com.hypixel.hytale.server.core.command.system.arguments.system.FlagArg;
 import com.hypixel.hytale.server.core.command.system.arguments.system.OptionalArg;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
@@ -12,6 +13,7 @@ import com.hypixel.hytale.server.core.command.system.basecommands.AbstractTarget
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import net.lordimass.assets.keyframes.GlobalSequenceContext;
 import net.lordimass.assets.keyframes.SequenceKeyframe;
 import net.lordimass.assets.sequences.GlobalSequenceAsset;
 import net.lordimass.assets.sequences.PlayerSequenceAsset;
@@ -22,19 +24,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class CameraSequenceCommand extends AbstractTargetPlayerCommand {
-    final RequiredArg<SequenceAsset> sequenceArg;
-
-    final OptionalArg<Integer> keyFrameArg;
+    final RequiredArg<SequenceAsset> sequenceArg = withRequiredArg("sequence", "The ID of the camera sequence asset to play back",
+        new AssetArgumentType<>("CameraAsset", SequenceAsset.class,
+            "Camera Asset"));
+    final OptionalArg<Integer> keyFrameArg = withOptionalArg("Keyframe", "Keyframe to jump to", ArgTypes.INTEGER);;
+    final FlagArg globalArg = withFlagArg("Global", "Whether to play this sequence globally, or just to the target player.");
 
     public CameraSequenceCommand() {
         super("camerasequence", "Play back a camera sequence asset.");
         this.addAliases("cinematic");
-
-        this.sequenceArg = withRequiredArg("sequence", "The ID of the camera sequence asset to play back",
-                new AssetArgumentType<>("CameraAsset", SequenceAsset.class,
-                        "Camera Asset"));
-
-        this.keyFrameArg = withOptionalArg("Keyframe", "Keyframe to jump to", ArgTypes.INTEGER);
 
         addSubCommand(new NewCommand());
         addSubCommand(new RemoveCommand());
@@ -80,12 +78,7 @@ public class CameraSequenceCommand extends AbstractTargetPlayerCommand {
                 Message.raw("Playing sequence '" + sequenceArg.get(commandContext).getId() + "' to player."));
         }
 
-        if (seq instanceof PlayerSequenceAsset playerSeq) {
-            playerSeq.play(playerRef, onComplete);
-        } else if (seq instanceof GlobalSequenceAsset globalSeq) {
-            globalSeq.play(onComplete);
-        } else {
-            commandContext.sendMessage(Message.raw("Unsupported sequence type!"));
-        }
+        if (!globalArg.get(commandContext)) seq.play(world, playerRef, onComplete);
+        else seq.play(world, null, onComplete);
     }
 }

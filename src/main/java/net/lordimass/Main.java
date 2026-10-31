@@ -5,16 +5,18 @@ import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import com.hypixel.hytale.builtin.triggervolumes.effect.TriggerEffect;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
-import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import net.lordimass.assets.*;
 import net.lordimass.assets.keyframes.CameraKeyframe;
+import net.lordimass.assets.keyframes.GlobalDelayKeyframe;
+import net.lordimass.assets.keyframes.GlobalMessageKeyframe;
 import net.lordimass.assets.keyframes.SequenceKeyframe;
 import net.lordimass.assets.sequences.CameraSequenceAsset;
+import net.lordimass.assets.sequences.GlobalSequenceAsset;
 import net.lordimass.assets.sequences.SequenceAsset;
 import net.lordimass.command.CameraSequenceCommand;
-import net.lordimass.tvEffects.TriggerCameraSequenceEffect;
+import net.lordimass.tvEffects.TriggerSequenceEffect;
 
 import java.util.logging.Level;
 
@@ -46,15 +48,19 @@ public class Main extends JavaPlugin {
         );
 
         SequenceAsset.CODEC.register("CameraSequence", CameraSequenceAsset.class, CameraSequenceAsset.CODEC);
+        SequenceAsset.CODEC.register("GlobalSequence", GlobalSequenceAsset.class, GlobalSequenceAsset.CODEC);
 
-        CameraKeyframe.CODEC.register("CameraKeyframe", CameraKeyframe.Keyframe.class, CameraKeyframe.Keyframe.CODEC);
-        CameraKeyframe.CODEC.register("CameraKeyframeLookingAt", CameraKeyframe.KeyframeLookingAt.class, CameraKeyframe.KeyframeLookingAt.CODEC);
+        SequenceKeyframe.CODEC.register("CameraKeyframe", CameraKeyframe.Keyframe.class, CameraKeyframe.Keyframe.CODEC);
+        SequenceKeyframe.CODEC.register("CameraKeyframeLookingAt", CameraKeyframe.KeyframeLookingAt.class, CameraKeyframe.KeyframeLookingAt.CODEC);
+
+        SequenceKeyframe.CODEC.register("GlobalDelayKeyframe", GlobalDelayKeyframe.class, GlobalDelayKeyframe.CODEC);
+        SequenceKeyframe.CODEC.register("GlobalMessageKeyframe", GlobalMessageKeyframe.class, GlobalMessageKeyframe.CODEC);
 
         DepthOfFieldSettingsAsset.register(this);
 
         var commandRegistry = getCommandRegistry();
         commandRegistry.registerCommand(new CameraSequenceCommand());
-        TriggerEffect.CODEC.register("TriggerCameraSequence", TriggerCameraSequenceEffect.class, TriggerCameraSequenceEffect.CODEC);
+        TriggerEffect.CODEC.register("TriggerCameraSequence", TriggerSequenceEffect.class, TriggerSequenceEffect.CODEC);
         Creditor.setup(this);
     }
 
