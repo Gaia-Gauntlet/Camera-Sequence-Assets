@@ -10,28 +10,28 @@ import org.jspecify.annotations.Nullable;
 import javax.annotation.Nonnull;
 import java.util.concurrent.TimeUnit;
 
-public class GlobalDelayKeyframe extends GlobalAwaitedKeyframe {
-    @Nonnull public static final BuilderCodec<@NotNull GlobalDelayKeyframe> CODEC = BuilderCodec
-        .builder(GlobalDelayKeyframe.class, GlobalDelayKeyframe::new)
+public class DelayKeyframe extends GlobalAwaitedKeyframe {
+    @Nonnull public static final BuilderCodec<@NotNull DelayKeyframe> CODEC = BuilderCodec
+        .builder(DelayKeyframe.class, DelayKeyframe::new)
         .documentation("Wait for the given length of time before executing the next keyframe")
-        .appendInherited(new KeyedCodec<>("Duration", Codec.FLOAT),
-            (c, v) -> c.duration = v,
-            GlobalDelayKeyframe::getDuration,
-            (a, b) -> a.duration = b.duration
+        .appendInherited(new KeyedCodec<>("Duration", Codec.DOUBLE),
+            (c, v) -> c.durationSeconds = v,
+            DelayKeyframe::getDurationSeconds,
+            (a, b) -> a.durationSeconds = b.durationSeconds
         )
         .documentation("The length of this keyframe.")
         .add()
         .build();
 
-    @Getter float duration;
+    @Getter double durationSeconds;
 
-    public GlobalDelayKeyframe() {
+    public DelayKeyframe() {
         super();
     }
 
-    public GlobalDelayKeyframe(boolean waitForCompletion, float duration) {
+    public DelayKeyframe(boolean waitForCompletion, float durationSeconds) {
         super(waitForCompletion);
-        this.duration = duration;
+        this.durationSeconds = durationSeconds;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class GlobalDelayKeyframe extends GlobalAwaitedKeyframe {
 
         context.world().scheduleAfter(
             onCompletion,
-            (long) (duration * 1000000),
+            (long) (durationSeconds * 1000000),
             TimeUnit.MICROSECONDS
         );
     }

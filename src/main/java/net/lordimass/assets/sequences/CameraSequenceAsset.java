@@ -1,19 +1,19 @@
 package net.lordimass.assets.sequences;
 
-import com.hypixel.hytale.assetstore.AssetKeyValidator;
-import com.hypixel.hytale.assetstore.codec.AssetBuilderCodec;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
-import com.hypixel.hytale.codec.validation.ValidatorCache;
 import com.hypixel.hytale.codec.validation.Validators;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.modules.camera.CameraKeyframeBuilder;
 import com.hypixel.hytale.server.core.modules.camera.CameraSequenceBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
 import lombok.Getter;
 import net.lordimass.assets.keyframes.CameraKeyframe;
+import net.lordimass.assets.keyframes.GlobalKeyframe;
+import net.lordimass.assets.keyframes.GlobalSequenceContext;
 import net.lordimass.assets.keyframes.SequenceKeyframe;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import static net.lordimass.utils.UiUtils.hideUI;
 import static net.lordimass.utils.UiUtils.showUI;
@@ -34,7 +35,7 @@ public class CameraSequenceAsset extends PlayerSequenceAsset {
             CameraSequenceAsset::new,
             PlayerSequenceAsset.ABSTRACT_CODEC
         )
-            .appendInherited(new KeyedCodec<>("Keyframes", new ArrayCodec<>(CameraKeyframe.CODEC, CameraKeyframe[]::new)),
+            .appendInherited(new KeyedCodec<>("Keyframes", new ArrayCodec<>(CameraKeyframe.CODEC, SequenceKeyframe[]::new)),
                 (asset, keyframes) -> asset.keyframes = keyframes,
                 SequenceAsset::getKeyframes,
                 (a, b) -> a.keyframes = b.keyframes
@@ -67,7 +68,7 @@ public class CameraSequenceAsset extends PlayerSequenceAsset {
 
     public CameraSequenceAsset(
         @Nonnull String id,
-        @Nonnull CameraKeyframe initialKeyframe,
+        @Nonnull SequenceKeyframe initialKeyframe,
         @Nullable Float baseFov,
         boolean hideUI
     ) {
@@ -79,7 +80,7 @@ public class CameraSequenceAsset extends PlayerSequenceAsset {
 
     public CameraSequenceAsset(
         @Nonnull String id,
-        @Nonnull CameraKeyframe[] keyframes,
+        @Nonnull SequenceKeyframe[] keyframes,
         @Nullable Float baseFov,
         boolean hideUI
     ) {
@@ -102,63 +103,116 @@ public class CameraSequenceAsset extends PlayerSequenceAsset {
             });
 
         // Add keyframes
-        for (CameraKeyframe keyframe : (CameraKeyframe[]) keyframes) {
-            Vector3d position = keyframe.isRelativeToPlayer() && playerRef != null
-                ? new Vector3d(playerRef.getTransform().getPosition()).add(keyframe.getPosition())
-                : keyframe.getPosition();
+        CameraKeyframeBuilder prevKeyframeBuilder = null;
+        for (var keyframe : keyframes) {
+
+            // Add a dud frame for non-camera frames to ensure future frames still line up
+            if (!(keyframe instanceof CameraKeyframe camFrame)) {
+                if (prevKeyframeBuilder != null && keyframe.getDurationSeconds() != 0 && keyframe.isWaitForCompletion()) {
+                    var frame = buildKeyframeWithDuration(
+                        prevKeyframeBuilder,
+                        (float) keyframe.getDurationSeconds()
+                    );
+                    seqBuilder.keyframe(frame);
+                }
+                continue;
+            }
+
             CameraKeyframeBuilder keyframeBuilder = new CameraKeyframeBuilder(
-                keyframe.getDurationSeconds(),
-                keyframe.getEasing()
+                (float) camFrame.getDurationSeconds(),
+                camFrame.getEasing()
             );
 
-            if (keyframe.getFov() != null) keyframeBuilder.fov(keyframe.getFov());
-            if (keyframe.getDepthOfFieldSettingsAsset() != null) keyframeBuilder.depthOfField(keyframe.getDepthOfFieldSettingsAsset().getDepthOfFieldSettings());
-            if (keyframe instanceof CameraKeyframe.Keyframe) {
-                Rotation3f look = keyframe.isRelativeToPlayer() && playerRef != null
-                    ? new Rotation3f(playerRef.getHeadRotation()).add(((CameraKeyframe.Keyframe) keyframe).getLookRadians())
-                    : ((CameraKeyframe.Keyframe) keyframe).getLookRadians();
-                look.x = ((CameraKeyframe.Keyframe) keyframe).getLookRadians().x; // Pitch should never be relative.
-                look.z = ((CameraKeyframe.Keyframe) keyframe).getLookRadians().z; // Roll should never be relative.
-                float yaw = playerRef != null ? playerRef.getHeadRotation().yaw() : 0;
-                position = keyframe.isRelativeToPlayer() && playerRef != null
-                    ? new Vector3d(playerRef.getTransform().getPosition()).add(new Vector3d(
-                    -keyframe.getPosition().x*Math.sin(yaw) + keyframe.getPosition().z*Math.cos(yaw),
-                    keyframe.getPosition().y,
-                    -keyframe.getPosition().x*Math.cos(yaw) - keyframe.getPosition().z*Math.sin(yaw)
-                )) : keyframe.getPosition();
-                seqBuilder = seqBuilder.keyframe(keyframeBuilder
+            if (camFrame.getFov() != null) keyframeBuilder.fov(camFrame.getFov());
+            if (camFrame.getDepthOfFieldSettingsAsset() != null) keyframeBuilder.depthOfField(camFrame.getDepthOfFieldSettingsAsset().getDepthOfFieldSettings());
+            if (camFrame instanceof CameraKeyframe.Keyframe) {
+                var look = getLookForFrame((CameraKeyframe.Keyframe) camFrame, playerRef);
+                var position = getPositionForFrame(camFrame, playerRef);
+                keyframeBuilder = keyframeBuilder
                     .position(position)
-                    .look(look)
-                );
-            } else if (keyframe instanceof CameraKeyframe.KeyframeLookingAt) {
-                Vector3d lookAtPoint = keyframe.isRelativeToPlayer() && playerRef != null
-                    ? playerRef.getTransform().getPosition().add(((CameraKeyframe.KeyframeLookingAt) keyframe).getLookAtPoint())
-                    : ((CameraKeyframe.KeyframeLookingAt) keyframe).getLookAtPoint();
-                seqBuilder = seqBuilder.keyframe(keyframeBuilder
+                    .look(look);
+                seqBuilder = seqBuilder.keyframe(keyframeBuilder);
+            } else if (camFrame instanceof CameraKeyframe.KeyframeLookingAt) {
+                var lookAtPoint = getLookAtPointForFrame((CameraKeyframe.KeyframeLookingAt) camFrame, playerRef);
+                var position = getPositionForFrame(camFrame, playerRef);
+                keyframeBuilder = keyframeBuilder
                     .position(position)
-                    .lookAt(lookAtPoint)
-                );
+                    .lookAt(lookAtPoint);
+                seqBuilder = seqBuilder.keyframe(keyframeBuilder);
             }
+            prevKeyframeBuilder = keyframeBuilder;
         }
         // Add flags to return camera control to player afterwards.
         return seqBuilder.addFlag((byte)1).addFlag((byte)2).addFlag((byte)4);
     }
 
-    /**
-     * Build the camera sequence builder object with all the keyframes.
-     * WARNING: If <code>HideUI</code> is enabled, this will not take effect here.
-     */
-    private CameraSequenceBuilder buildSequenceBuilder(@Nullable PlayerRef playerRef) {
-        return buildSequenceBuilder(playerRef, null);
+    private static Rotation3f getLookForFrame(CameraKeyframe.Keyframe frame, @Nullable PlayerRef playerRef) {
+        Rotation3f look = frame.isRelativeToPlayer() && playerRef != null
+            ? new Rotation3f(playerRef.getHeadRotation()).add(frame.getLookRadians())
+            : frame.getLookRadians();
+        look.x = frame.getLookRadians().x; // Pitch should never be relative.
+        look.z = frame.getLookRadians().z; // Roll should never be relative.
+        return look;
+    }
+
+    private static Vector3d getLookAtPointForFrame(CameraKeyframe.KeyframeLookingAt frame, @Nullable PlayerRef playerRef) {
+        return frame.isRelativeToPlayer() && playerRef != null
+            ? playerRef.getTransform().getPosition().add(frame.getLookAtPoint())
+            : frame.getLookAtPoint();
+    }
+
+    private static Vector3d getPositionForFrame(CameraKeyframe frame, @Nullable PlayerRef playerRef) {
+        if (frame instanceof CameraKeyframe.Keyframe camFrame) {
+            float yaw = playerRef != null ? playerRef.getHeadRotation().yaw() : 0;
+            return camFrame.isRelativeToPlayer() && playerRef != null
+                ? new Vector3d(playerRef.getTransform().getPosition()).add(new Vector3d(
+                -camFrame.getPosition().x*Math.sin(yaw) + camFrame.getPosition().z*Math.cos(yaw),
+                camFrame.getPosition().y,
+                -camFrame.getPosition().x*Math.cos(yaw) - camFrame.getPosition().z*Math.sin(yaw)
+            )) : camFrame.getPosition();
+        } else {
+            return frame.isRelativeToPlayer() && playerRef != null
+                ? new Vector3d(playerRef.getTransform().getPosition()).add(frame.getPosition())
+                : frame.getPosition();
+        }
+    }
+
+    private static CameraKeyframeBuilder buildKeyframeWithDuration(CameraKeyframeBuilder frame, float duration) {
+        var builtFrame = frame.build();
+        var newFrame = new CameraKeyframeBuilder(duration, builtFrame.easing);
+        if (builtFrame.depthOfField != null) newFrame = newFrame.depthOfField(builtFrame.depthOfField);
+        if (builtFrame.fov != null) newFrame = newFrame.fov(builtFrame.fov);
+        if (builtFrame.look != null) newFrame = newFrame.look(
+            new Rotation3f(builtFrame.look.pitch, builtFrame.look.yaw, builtFrame.look.roll)
+        );
+        if (builtFrame.lookAtPoint != null) newFrame = newFrame.lookAt(
+            new Vector3d(builtFrame.lookAtPoint.x, builtFrame.lookAtPoint.y, builtFrame.lookAtPoint.z)
+        );
+        if (builtFrame.position != null) newFrame = newFrame.position(
+            new Vector3d(builtFrame.position.x, builtFrame.position.y, builtFrame.position.z)
+        );
+        return newFrame;
     }
 
     public void play(@Nonnull PlayerRef playerRef, @Nullable Runnable onComplete) {
         if (hideUI) hideUI(playerRef);
         buildSequenceBuilder(playerRef, onComplete).sendTo(playerRef);
+        for (SequenceKeyframe keyframe : keyframes) { // Schedule running global keyframes in time
+            if (!(keyframe instanceof GlobalKeyframe gFrame)) continue;
+            var worldUuid = playerRef.getWorldUuid();
+            if (worldUuid == null) return;
+            var world = Universe.get().getWorld(worldUuid);
+            if (world == null) return;
+            world.scheduleAfter(
+                () -> gFrame.run(new GlobalSequenceContext(world, playerRef)),
+                (long) (keyframe.getStartTimestamp(this.keyframes) * 1000000),
+                TimeUnit.MICROSECONDS
+            );
+        }
     }
 
-    public void addKeyframe(CameraKeyframe keyframe) {
-        CameraKeyframe[] updated = Arrays.copyOf((CameraKeyframe[]) keyframes, keyframes.length + 1);
+    public void addKeyframe(SequenceKeyframe keyframe) {
+        var updated = Arrays.copyOf(keyframes, keyframes.length + 1);
         updated[keyframes.length] = keyframe;
         keyframes = updated;
     }
@@ -167,10 +221,10 @@ public class CameraSequenceAsset extends PlayerSequenceAsset {
         keyframes[keyframe] = null;
         var listFrames = new ArrayList(Arrays.stream(keyframes).toList());
         listFrames.remove(keyframe);
-        this.keyframes = (CameraKeyframe[]) listFrames.toArray(new CameraKeyframe[keyframes.length-1]);
+        this.keyframes = (SequenceKeyframe[]) listFrames.toArray(new CameraKeyframe[keyframes.length-1]);
     }
 
     public CameraSequenceAsset clone() {
-        return new CameraSequenceAsset(id, (CameraKeyframe[]) keyframes, baseFov, hideUI);
+        return new CameraSequenceAsset(id, keyframes, baseFov, hideUI);
     }
 }

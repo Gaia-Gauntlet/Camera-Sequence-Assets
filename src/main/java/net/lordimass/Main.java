@@ -49,9 +49,11 @@ public class Main extends JavaPlugin {
 
         CameraKeyframe.CODEC.register("CameraKeyframe", CameraKeyframe.Keyframe.class, CameraKeyframe.Keyframe.CODEC);
         CameraKeyframe.CODEC.register("CameraKeyframeLookingAt", CameraKeyframe.KeyframeLookingAt.class, CameraKeyframe.KeyframeLookingAt.CODEC);
+        CameraKeyframe.CODEC.register("DelayKeyframe", DelayKeyframe.class, DelayKeyframe.CODEC);
+        CameraKeyframe.CODEC.register("MessageKeyframe", MessageKeyframe.class, MessageKeyframe.CODEC);
 
-        GlobalKeyframe.CODEC.register("GlobalDelayKeyframe", GlobalDelayKeyframe.class, GlobalDelayKeyframe.CODEC);
-        GlobalKeyframe.CODEC.register("GlobalMessageKeyframe", GlobalMessageKeyframe.class, GlobalMessageKeyframe.CODEC);
+        GlobalKeyframe.CODEC.register("DelayKeyframe", DelayKeyframe.class, DelayKeyframe.CODEC);
+        GlobalKeyframe.CODEC.register("MessageKeyframe", MessageKeyframe.class, MessageKeyframe.CODEC);
 
         DepthOfFieldSettingsAsset.register(this);
 

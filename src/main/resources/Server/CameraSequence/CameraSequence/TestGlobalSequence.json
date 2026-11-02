@@ -2,15 +2,15 @@
   "Type": "GlobalSequence",
   "Keyframes": [
     {
-      "Id": "GlobalMessageKeyframe",
+      "Id": "MessageKeyframe",
       "Message": "Hello world?"
     },
     {
-      "Id": "GlobalDelayKeyframe",
+      "Id": "DelayKeyframe",
       "Duration": 1
     },
     {
-      "Id": "GlobalMessageKeyframe",
+      "Id": "MessageKeyframe",
       "Message": "Hello world!"
     }
   ]

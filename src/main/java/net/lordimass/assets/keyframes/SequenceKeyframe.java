@@ -31,4 +31,24 @@ public abstract class SequenceKeyframe {
 
     @Getter String title;
     @Getter String notes;
+
+    /**
+     * Calculates how far through the sequence this frame should start playing.
+     */
+    public double getStartTimestamp(SequenceKeyframe[] keyframes) {
+        double time = 0;
+        for (SequenceKeyframe frame : keyframes) {
+            if (frame.equals(this)) return time;
+            time += frame.getDurationSeconds();
+        }
+        return time;
+    }
+
+    public double getDurationSeconds() {
+        return 0;
+    }
+
+    public boolean isWaitForCompletion() {
+        return true;
+    }
 }

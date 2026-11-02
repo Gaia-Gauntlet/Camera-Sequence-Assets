@@ -31,7 +31,7 @@ public abstract class CameraKeyframe extends SequenceKeyframe {
         .addValidator(Validators.nonNull())
         .documentation("The position the camera should have moved to by the end of this keyframe.")
         .add()
-        .appendInherited(new KeyedCodec<>("Duration", Codec.FLOAT),
+        .appendInherited(new KeyedCodec<>("Duration", Codec.DOUBLE),
             (keyframe, duration) -> keyframe.durationSeconds = duration == null ? 0 : duration,
             CameraKeyframe::getDurationSeconds,
             (cameraKeyframe, parent) -> cameraKeyframe.durationSeconds = parent.durationSeconds
@@ -68,7 +68,7 @@ public abstract class CameraKeyframe extends SequenceKeyframe {
         .build();
 
     @Getter private Vector3d position;
-    @Getter private float durationSeconds;
+    @Getter private double durationSeconds;
     @Getter private EasingType easing = EasingType.Linear;
     @Getter private Float fov = 70f;
     @Getter private boolean relativeToPlayer;

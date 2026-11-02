@@ -17,6 +17,14 @@
       "DepthOfFieldSettings": "TestDepthOfField"
     },
     {
+      "Id": "MessageKeyframe",
+      "Message": "Test!"
+    },
+    {
+      "Id": "DelayKeyframe",
+      "Duration": 1
+    },
+    {
       "Id": "CameraKeyframe",
       "RelativeToPlayer": true,
       "Position": {

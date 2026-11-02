@@ -10,14 +10,14 @@ import org.jspecify.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
-public class GlobalMessageKeyframe extends GlobalKeyframe {
+public class MessageKeyframe extends GlobalKeyframe {
     @Nonnull
-    public static final BuilderCodec<@NotNull GlobalMessageKeyframe> CODEC = BuilderCodec
-        .builder(GlobalMessageKeyframe.class, GlobalMessageKeyframe::new)
+    public static final BuilderCodec<@NotNull MessageKeyframe> CODEC = BuilderCodec
+        .builder(MessageKeyframe.class, MessageKeyframe::new)
         .documentation("Put a message in chat.")
         .appendInherited(new KeyedCodec<>("Message", Codec.STRING),
             (c, v) -> c.message = v,
-            GlobalMessageKeyframe::getMessage,
+            MessageKeyframe::getMessage,
             (a, b) -> a.message = b.message
         )
         .documentation("The length of this keyframe.")
@@ -26,9 +26,9 @@ public class GlobalMessageKeyframe extends GlobalKeyframe {
 
     @Getter String message;
 
-    public GlobalMessageKeyframe() {}
+    public MessageKeyframe() {}
 
-    public GlobalMessageKeyframe(String message) {
+    public MessageKeyframe(String message) {
         this.message = message;
     }
 
