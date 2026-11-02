@@ -36,7 +36,7 @@ public class CameraSequenceAsset extends PlayerSequenceAsset {
         )
             .appendInherited(new KeyedCodec<>("Keyframes", new ArrayCodec<>(CameraKeyframe.CODEC, CameraKeyframe[]::new)),
                 (asset, keyframes) -> asset.keyframes = keyframes,
-                (asset) -> (CameraKeyframe[]) asset.getKeyframes(),
+                SequenceAsset::getKeyframes,
                 (a, b) -> a.keyframes = b.keyframes
             )
             .addValidator(Validators.nonNull())

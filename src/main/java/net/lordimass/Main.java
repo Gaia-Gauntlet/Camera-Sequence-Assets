@@ -8,10 +8,7 @@ import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import net.lordimass.assets.*;
-import net.lordimass.assets.keyframes.CameraKeyframe;
-import net.lordimass.assets.keyframes.GlobalDelayKeyframe;
-import net.lordimass.assets.keyframes.GlobalMessageKeyframe;
-import net.lordimass.assets.keyframes.SequenceKeyframe;
+import net.lordimass.assets.keyframes.*;
 import net.lordimass.assets.sequences.CameraSequenceAsset;
 import net.lordimass.assets.sequences.GlobalSequenceAsset;
 import net.lordimass.assets.sequences.SequenceAsset;
@@ -50,11 +47,11 @@ public class Main extends JavaPlugin {
         SequenceAsset.CODEC.register("CameraSequence", CameraSequenceAsset.class, CameraSequenceAsset.CODEC);
         SequenceAsset.CODEC.register("GlobalSequence", GlobalSequenceAsset.class, GlobalSequenceAsset.CODEC);
 
-        SequenceKeyframe.CODEC.register("CameraKeyframe", CameraKeyframe.Keyframe.class, CameraKeyframe.Keyframe.CODEC);
-        SequenceKeyframe.CODEC.register("CameraKeyframeLookingAt", CameraKeyframe.KeyframeLookingAt.class, CameraKeyframe.KeyframeLookingAt.CODEC);
+        CameraKeyframe.CODEC.register("CameraKeyframe", CameraKeyframe.Keyframe.class, CameraKeyframe.Keyframe.CODEC);
+        CameraKeyframe.CODEC.register("CameraKeyframeLookingAt", CameraKeyframe.KeyframeLookingAt.class, CameraKeyframe.KeyframeLookingAt.CODEC);
 
-        SequenceKeyframe.CODEC.register("GlobalDelayKeyframe", GlobalDelayKeyframe.class, GlobalDelayKeyframe.CODEC);
-        SequenceKeyframe.CODEC.register("GlobalMessageKeyframe", GlobalMessageKeyframe.class, GlobalMessageKeyframe.CODEC);
+        GlobalKeyframe.CODEC.register("GlobalDelayKeyframe", GlobalDelayKeyframe.class, GlobalDelayKeyframe.CODEC);
+        GlobalKeyframe.CODEC.register("GlobalMessageKeyframe", GlobalMessageKeyframe.class, GlobalMessageKeyframe.CODEC);
 
         DepthOfFieldSettingsAsset.register(this);
 

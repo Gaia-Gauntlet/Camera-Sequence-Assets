@@ -19,6 +19,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public abstract class CameraKeyframe extends SequenceKeyframe {
+    public static CodecMapCodec<SequenceKeyframe> CODEC = new CodecMapCodec<>();
+
     @Nonnull public static final BuilderCodec<@NotNull CameraKeyframe> ABSTRACT_CODEC = BuilderCodec
         .abstractBuilder(CameraKeyframe.class, SequenceKeyframe.ABSTRACT_CODEC)
         .appendInherited(new KeyedCodec<>("Position", Vector3dUtil.CODEC),
