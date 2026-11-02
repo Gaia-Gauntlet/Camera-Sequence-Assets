@@ -8,9 +8,9 @@ public abstract class GlobalKeyframe extends SequenceKeyframe {
 
     public static CodecMapCodec<SequenceKeyframe> CODEC = new CodecMapCodec<>();
 
-    abstract public void run(GlobalSequenceContext context, @Nullable Runnable onCompletion);
+    abstract public void run(SequenceContext context, @Nullable Runnable onCompletion);
 
-    public void run(GlobalSequenceContext context) {
+    public void run(SequenceContext context) {
         run(context, null);
     }
 }

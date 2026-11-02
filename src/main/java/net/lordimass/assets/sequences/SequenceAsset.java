@@ -4,7 +4,6 @@ import com.hypixel.hytale.assetstore.AssetExtraInfo;
 import com.hypixel.hytale.assetstore.AssetKeyValidator;
 import com.hypixel.hytale.assetstore.AssetRegistry;
 import com.hypixel.hytale.assetstore.AssetStore;
-import com.hypixel.hytale.assetstore.codec.AssetBuilderCodec;
 import com.hypixel.hytale.assetstore.codec.AssetCodecMapCodec;
 import com.hypixel.hytale.assetstore.codec.ContainedAssetCodec;
 import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
@@ -13,24 +12,21 @@ import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
-import com.hypixel.hytale.codec.lookup.CodecMapCodec;
 import com.hypixel.hytale.codec.validation.ValidatorCache;
 import com.hypixel.hytale.codec.validation.Validators;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
-import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
-import jdk.jshell.spi.ExecutionControl;
 import lombok.Getter;
 import net.lordimass.assets.keyframes.CameraKeyframe;
-import net.lordimass.assets.keyframes.GlobalSequenceContext;
+import net.lordimass.assets.keyframes.SequenceContext;
 import net.lordimass.assets.keyframes.SequenceKeyframe;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
+import java.util.UUID;
 
 public abstract class SequenceAsset implements JsonAssetWithMap<String, DefaultAssetMap<String, SequenceAsset>> {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -106,13 +102,16 @@ public abstract class SequenceAsset implements JsonAssetWithMap<String, DefaultA
     }
 
     public void play(@Nonnull World world, @Nullable PlayerRef playerRef, @Nullable Runnable onComplete) {
+        var ctx = new SequenceContext(world, playerRef, UUID.randomUUID());
+        Runnable wrappedOnComplete = () -> onComplete(ctx, onComplete);
+
         if (this instanceof PlayerSequenceAsset playerSeq) {
-            if (playerRef == null) playerSeq.play(world, onComplete);
-            else playerSeq.play(playerRef, onComplete);
+            if (playerRef == null) playerSeq.play(ctx, world, wrappedOnComplete);
+            else playerSeq.play(ctx, playerRef, wrappedOnComplete);
         }
 
         else if (this instanceof GlobalSequenceAsset globalSeq) {
-            globalSeq.play(new GlobalSequenceContext(world, playerRef), onComplete);
+            globalSeq.play(ctx, wrappedOnComplete);
         }
 
         else {
@@ -122,6 +121,14 @@ public abstract class SequenceAsset implements JsonAssetWithMap<String, DefaultA
                 LOGGER.atWarning().log("Couldn't play unsupported camera sequence type!");
             }
         }
+    }
+
+    private void onComplete(SequenceContext ctx, @Nullable Runnable onComplete) {
+        ctx.unregister();
+
+        // Tidy up
+
+        if (onComplete != null) onComplete.run();
     }
 
     public void play(@Nonnull World world, @Nullable PlayerRef playerRef) {

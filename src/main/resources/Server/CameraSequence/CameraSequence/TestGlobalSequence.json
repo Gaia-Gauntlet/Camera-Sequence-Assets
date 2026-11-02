@@ -12,6 +12,15 @@
     {
       "Id": "MessageKeyframe",
       "Message": "Hello world!"
+    },
+    {
+      "Id": "GlobalSpawnNPCKeyframe",
+      "Role": "Chicken_Undead",
+      "Position": {
+        "X": 97,
+        "Y": 123,
+        "Z": 232
+      }
     }
   ]
 }

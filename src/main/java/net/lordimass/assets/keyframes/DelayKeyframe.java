@@ -35,7 +35,7 @@ public class DelayKeyframe extends GlobalAwaitedKeyframe {
     }
 
     @Override
-    public void run(GlobalSequenceContext context, @Nullable Runnable onCompletion) {
+    public void run(SequenceContext context, @Nullable Runnable onCompletion) {
         if (onCompletion == null) return;
 
         context.world().scheduleAfter(

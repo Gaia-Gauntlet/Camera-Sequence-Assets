@@ -33,7 +33,7 @@ public class MessageKeyframe extends GlobalKeyframe {
     }
 
     @Override
-    public void run(GlobalSequenceContext context, @Nullable Runnable onCompletion) {
+    public void run(SequenceContext context, @Nullable Runnable onCompletion) {
         var translated = Message.translation(message);
         translated.getFormattedMessage().markupEnabled = true;
 

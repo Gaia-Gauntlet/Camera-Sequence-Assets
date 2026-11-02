@@ -13,7 +13,7 @@ import com.hypixel.hytale.server.core.universe.Universe;
 import lombok.Getter;
 import net.lordimass.assets.keyframes.CameraKeyframe;
 import net.lordimass.assets.keyframes.GlobalKeyframe;
-import net.lordimass.assets.keyframes.GlobalSequenceContext;
+import net.lordimass.assets.keyframes.SequenceContext;
 import net.lordimass.assets.keyframes.SequenceKeyframe;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static net.lordimass.utils.UiUtils.hideUI;
@@ -194,17 +195,20 @@ public class CameraSequenceAsset extends PlayerSequenceAsset {
         return newFrame;
     }
 
-    public void play(@Nonnull PlayerRef playerRef, @Nullable Runnable onComplete) {
+    @Override
+    void play(SequenceContext ctx, @Nonnull PlayerRef playerRef, @Nullable Runnable onComplete) {
         if (hideUI) hideUI(playerRef);
         buildSequenceBuilder(playerRef, onComplete).sendTo(playerRef);
-        for (SequenceKeyframe keyframe : keyframes) { // Schedule running global keyframes in time
+
+        // Schedule running global keyframes in time
+        var worldUuid = playerRef.getWorldUuid();
+        if (worldUuid == null) return;
+        var world = Universe.get().getWorld(worldUuid);
+        if (world == null) return;
+        for (SequenceKeyframe keyframe : keyframes) {
             if (!(keyframe instanceof GlobalKeyframe gFrame)) continue;
-            var worldUuid = playerRef.getWorldUuid();
-            if (worldUuid == null) return;
-            var world = Universe.get().getWorld(worldUuid);
-            if (world == null) return;
             world.scheduleAfter(
-                () -> gFrame.run(new GlobalSequenceContext(world, playerRef)),
+                () -> gFrame.run(ctx),
                 (long) (keyframe.getStartTimestamp(this.keyframes) * 1000000),
                 TimeUnit.MICROSECONDS
             );

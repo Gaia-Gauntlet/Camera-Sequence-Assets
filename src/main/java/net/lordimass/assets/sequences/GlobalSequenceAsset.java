@@ -5,8 +5,7 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.codec.validation.Validators;
 import net.lordimass.assets.keyframes.GlobalKeyframe;
-import net.lordimass.assets.keyframes.GlobalSequenceContext;
-import net.lordimass.assets.keyframes.SequenceKeyframe;
+import net.lordimass.assets.keyframes.SequenceContext;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -46,12 +45,12 @@ public class GlobalSequenceAsset extends SequenceAsset {
     }
 
 
-    public void play(@Nonnull GlobalSequenceContext context, @Nullable Runnable onComplete) {
+    void play(@Nonnull SequenceContext context, @Nullable Runnable onComplete) {
         var frames = new ArrayList<>(Arrays.asList((GlobalKeyframe[]) keyframes));
         play0(context, onComplete, frames);
     }
 
-    private void play0(GlobalSequenceContext context, @Nullable Runnable onComplete, List<GlobalKeyframe> frames) {
+    private void play0(SequenceContext context, @Nullable Runnable onComplete, List<GlobalKeyframe> frames) {
         if (frames.isEmpty()) {
             if (onComplete != null) onComplete.run();
             return;

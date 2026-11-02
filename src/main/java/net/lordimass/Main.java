@@ -14,6 +14,7 @@ import net.lordimass.assets.sequences.CameraSequenceAsset;
 import net.lordimass.assets.sequences.GlobalSequenceAsset;
 import net.lordimass.assets.sequences.SequenceAsset;
 import net.lordimass.command.CameraSequenceCommand;
+import net.lordimass.resources.WorldSequenceStore;
 import net.lordimass.tvEffects.TriggerSequenceEffect;
 
 import java.util.logging.Level;
@@ -45,6 +46,10 @@ public class Main extends JavaPlugin {
                 .build()
         );
 
+        WorldSequenceStore.setResourceType(getEntityStoreRegistry().registerResource(
+            WorldSequenceStore.class, WorldSequenceStore.ID, WorldSequenceStore.CODEC
+        ));
+
         SequenceAsset.CODEC.register("CameraSequence", CameraSequenceAsset.class, CameraSequenceAsset.CODEC);
         SequenceAsset.CODEC.register("GlobalSequence", GlobalSequenceAsset.class, GlobalSequenceAsset.CODEC);
 
@@ -57,6 +62,7 @@ public class Main extends JavaPlugin {
         GlobalKeyframe.CODEC.register("DelayKeyframe", DelayKeyframe.class, DelayKeyframe.CODEC);
         GlobalKeyframe.CODEC.register("MessageKeyframe", MessageKeyframe.class, MessageKeyframe.CODEC);
         GlobalKeyframe.CODEC.register("SoundEventKeyframe", SoundEventKeyframe.class, SoundEventKeyframe.CODEC);
+        GlobalKeyframe.CODEC.register("GlobalSpawnNPCKeyframe", GlobalSpawnNPCKeyframe.class, GlobalSpawnNPCKeyframe.CODEC);
 
         DepthOfFieldSettingsAsset.register(this);
 

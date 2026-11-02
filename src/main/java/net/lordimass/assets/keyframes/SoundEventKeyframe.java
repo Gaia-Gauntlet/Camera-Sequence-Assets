@@ -1,12 +1,10 @@
 package net.lordimass.assets.keyframes;
 
-import com.hypixel.hytale.assetstore.AssetKeyValidator;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.EnumCodec;
 import com.hypixel.hytale.protocol.SoundCategory;
-import com.hypixel.hytale.server.core.asset.type.audiocategory.config.AudioCategory;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
@@ -42,7 +40,7 @@ public class SoundEventKeyframe extends DelayKeyframe {
     @Getter private SoundCategory soundCategory = SoundCategory.SFX;
 
     @Override
-    public void run(GlobalSequenceContext context, @Nullable Runnable onCompletion) {
+    public void run(SequenceContext context, @Nullable Runnable onCompletion) {
         var soundEvent = getSoundEvent();
         if (soundEvent == null) return;
         var soundEventIndex = SoundEvent.getAssetMap().getIndex(soundEventKey);
