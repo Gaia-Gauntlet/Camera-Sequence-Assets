@@ -21,6 +21,10 @@
       "Message": "Test!"
     },
     {
+      "Id": "SoundEventKeyframe",
+      "SoundEvent": "SFX_Debris_Metal_Impact"
+    },
+    {
       "Id": "DelayKeyframe",
       "Duration": 1
     },

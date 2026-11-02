@@ -5,6 +5,7 @@ import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import com.hypixel.hytale.builtin.triggervolumes.effect.TriggerEffect;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
+import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import net.lordimass.assets.*;
@@ -51,9 +52,11 @@ public class Main extends JavaPlugin {
         CameraKeyframe.CODEC.register("CameraKeyframeLookingAt", CameraKeyframe.KeyframeLookingAt.class, CameraKeyframe.KeyframeLookingAt.CODEC);
         CameraKeyframe.CODEC.register("DelayKeyframe", DelayKeyframe.class, DelayKeyframe.CODEC);
         CameraKeyframe.CODEC.register("MessageKeyframe", MessageKeyframe.class, MessageKeyframe.CODEC);
+        CameraKeyframe.CODEC.register("SoundEventKeyframe", SoundEventKeyframe.class, SoundEventKeyframe.CODEC);
 
         GlobalKeyframe.CODEC.register("DelayKeyframe", DelayKeyframe.class, DelayKeyframe.CODEC);
         GlobalKeyframe.CODEC.register("MessageKeyframe", MessageKeyframe.class, MessageKeyframe.CODEC);
+        GlobalKeyframe.CODEC.register("SoundEventKeyframe", SoundEventKeyframe.class, SoundEventKeyframe.CODEC);
 
         DepthOfFieldSettingsAsset.register(this);
 
