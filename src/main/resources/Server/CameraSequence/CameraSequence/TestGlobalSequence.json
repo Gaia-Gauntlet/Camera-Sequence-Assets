@@ -2,16 +2,81 @@
   "Type": "GlobalSequence",
   "Keyframes": [
     {
-      "Id": "MessageKeyframe",
-      "Message": "Hello world?"
-    },
-    {
-      "Id": "DelayKeyframe",
-      "Duration": 1
-    },
-    {
-      "Id": "MessageKeyframe",
-      "Message": "Hello world!"
+      "Id": "PlaySequenceKeyframe",
+      "Sequence": {
+        "Type": "CameraSequence",
+        "Keyframes": [
+          {
+            "Id": "CameraKeyframe",
+            "Title": "Start at chicken spawn",
+            "Position": {
+              "X": 97,
+              "Y": 123.5,
+              "Z": 225
+            },
+            "Look": {
+              "Yaw": 180
+            }
+          },
+          {
+            "Id": "CameraKeyframe",
+            "Position": {
+              "Y": 126,
+              "X": 97,
+              "Z": 225
+            },
+            "RelativeToPlayer": false,
+            "Duration": 1,
+            "Look": {
+              "Pitch": 0,
+              "Yaw": 180
+            }
+          },
+          {
+            "Id": "CameraKeyframe",
+            "Position": {
+              "X": 100,
+              "Y": 126,
+              "Z": 225
+            },
+            "Duration": 1,
+            "Look": {
+              "Pitch": 0,
+              "Yaw": 180
+            },
+            "RelativeToPlayer": false
+          },
+          {
+            "Id": "CameraKeyframe",
+            "Position": {
+              "Y": 123.5,
+              "X": 100,
+              "Z": 225
+            },
+            "RelativeToPlayer": false,
+            "Look": {
+              "Pitch": 0,
+              "Yaw": 180
+            },
+            "Duration": 1
+          },
+          {
+            "Id": "CameraKeyframe",
+            "RelativeToPlayer": false,
+            "Position": {
+              "X": 97,
+              "Y": 123.5,
+              "Z": 225
+            },
+            "Look": {
+              "Pitch": 0,
+              "Yaw": 180
+            },
+            "Duration": 1
+          }
+        ]
+      },
+      "WaitForCompletion": false
     },
     {
       "Id": "GlobalSpawnNpcKeyframe",
@@ -67,7 +132,8 @@
         "Roll": 90
       },
       "Duration": 1,
-      "RelativeToNpc": true
+      "RelativeToNpc": true,
+      "Easing": "Linear"
     },
     {
       "Id": "GlobalTransformNpcKeyframe",

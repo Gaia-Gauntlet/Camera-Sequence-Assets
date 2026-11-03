@@ -31,8 +31,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public abstract class SequenceAsset implements JsonAssetWithMap<String, DefaultAssetMap<String, SequenceAsset>> {
@@ -130,6 +128,10 @@ public abstract class SequenceAsset implements JsonAssetWithMap<String, DefaultA
         }
     }
 
+    public void play(@Nonnull World world, @Nullable PlayerRef playerRef) {
+        play(world, playerRef, null);
+    }
+
     private void onComplete(SequenceContext ctx, @Nullable Runnable onComplete) {
         ctx.unregister();
 
@@ -137,13 +139,13 @@ public abstract class SequenceAsset implements JsonAssetWithMap<String, DefaultA
         Store<EntityStore> store = ctx.world().getEntityStore().getStore();
         store.forEachEntityParallel(
             Query.and(Ephemeral.getComponentType(), SequenceEntityComponent.getComponentType()),
-            (i, chunk, commandBuffer) -> forEachEntityParallel(ctx, i, chunk, commandBuffer)
+            (i, chunk, commandBuffer) -> cleanUpEntity(ctx, i, chunk, commandBuffer)
         );
 
         if (onComplete != null) onComplete.run();
     }
 
-    private static void forEachEntityParallel(SequenceContext ctx, int i, ArchetypeChunk<EntityStore> chunk, CommandBuffer<EntityStore> commandBuffer) {
+    private static void cleanUpEntity(SequenceContext ctx, int i, ArchetypeChunk<EntityStore> chunk, CommandBuffer<EntityStore> commandBuffer) {
         // Only clean up entities for this current sequence.
         var seqEntityComp = chunk.getComponent(i, SequenceEntityComponent.getComponentType());
         assert seqEntityComp != null;
@@ -152,8 +154,12 @@ public abstract class SequenceAsset implements JsonAssetWithMap<String, DefaultA
         commandBuffer.removeEntity(chunk.getReferenceTo(i), RemoveReason.REMOVE);
     }
 
-    public void play(@Nonnull World world, @Nullable PlayerRef playerRef) {
-        play(world, playerRef, null);
+    public double getDurationSeconds() {
+        double duration = 0;
+        for (SequenceKeyframe keyframe : keyframes) {
+            duration += keyframe.getDurationSeconds();
+        }
+        return duration;
     }
 
     public abstract SequenceAsset clone();

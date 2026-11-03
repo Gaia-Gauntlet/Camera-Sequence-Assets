@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DelayKeyframe extends GlobalAwaitedKeyframe {
     @Nonnull public static final BuilderCodec<@NotNull DelayKeyframe> CODEC = BuilderCodec
-        .builder(DelayKeyframe.class, DelayKeyframe::new)
+        .builder(DelayKeyframe.class, DelayKeyframe::new, GlobalAwaitedKeyframe.ABSTRACT_CODEC)
         .documentation("Wait for the given length of time before executing the next keyframe")
         .appendInherited(new KeyedCodec<>("Duration", Codec.DOUBLE),
             (c, v) -> c.durationSeconds = v,

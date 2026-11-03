@@ -55,7 +55,13 @@ public class GlobalSequenceAsset extends SequenceAsset {
             return;
         }
         var frame = frames.removeFirst();
-        frame.run(context, () -> play0(context, onComplete, frames));
+        if (frame.isWaitForCompletion()) {
+            frame.run(context, () -> play0(context, onComplete, frames));
+        } else {
+            frame.run(context);
+            play0(context, onComplete, frames);
+        }
+
     }
 
     @Override
