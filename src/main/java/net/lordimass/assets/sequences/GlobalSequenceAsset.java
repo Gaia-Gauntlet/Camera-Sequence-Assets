@@ -44,7 +44,6 @@ public class GlobalSequenceAsset extends SequenceAsset {
         super(id, keyframes);
     }
 
-
     void play(@Nonnull SequenceContext context, @Nullable Runnable onComplete) {
         var frames = new ArrayList<>(Arrays.asList((GlobalKeyframe[]) keyframes));
         play0(context, onComplete, frames);

@@ -18,6 +18,8 @@ import org.joml.Vector3d;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static net.lordimass.utils.TransformUtils.EASING_CODEC;
+
 public abstract class CameraKeyframe extends SequenceKeyframe {
     public static CodecMapCodec<SequenceKeyframe> CODEC = new CodecMapCodec<>();
 
@@ -38,7 +40,7 @@ public abstract class CameraKeyframe extends SequenceKeyframe {
         )
         .documentation("The length of time this keyframe should take, in seconds.")
         .add()
-        .appendInherited(new KeyedCodec<>("Easing", new EnumCodec<>(EasingType.class)),
+        .appendInherited(new KeyedCodec<>("Easing", EASING_CODEC),
             (keyframe, easing) -> keyframe.easing = easing == null ? EasingType.Linear : easing,
             CameraKeyframe::getEasing,
             (cameraKeyframe, parent) -> cameraKeyframe.easing = parent.easing

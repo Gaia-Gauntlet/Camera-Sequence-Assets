@@ -17,12 +17,12 @@ import net.lordimass.assets.keyframes.SequenceContext;
 import net.lordimass.assets.keyframes.SequenceKeyframe;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
+import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static net.lordimass.utils.UiUtils.hideUI;
@@ -196,7 +196,7 @@ public class CameraSequenceAsset extends PlayerSequenceAsset {
     }
 
     @Override
-    void play(SequenceContext ctx, @Nonnull PlayerRef playerRef, @Nullable Runnable onComplete) {
+    void play(@NonNull SequenceContext ctx, @Nonnull PlayerRef playerRef, @Nullable Runnable onComplete) {
         if (hideUI) hideUI(playerRef);
         buildSequenceBuilder(playerRef, onComplete).sendTo(playerRef);
 

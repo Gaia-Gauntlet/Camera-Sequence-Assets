@@ -14,13 +14,70 @@
       "Message": "Hello world!"
     },
     {
-      "Id": "GlobalSpawnNPCKeyframe",
+      "Id": "GlobalSpawnNpcKeyframe",
       "Role": "Chicken_Undead",
-      "Position": {
+      "Ephemeral": true,
+      "Frozen": true,
+      "NpcSelector": {
+        "SelectorId": "Chicken"
+      },
+      "Transform": {
         "X": 97,
         "Y": 123,
         "Z": 232
       }
+    },
+    {
+      "Id": "GlobalTransformNpcKeyframe",
+      "Selector": {
+        "SelectorId": "Chicken"
+      },
+      "TargetTransform": {
+        "X": 97,
+        "Y": 127,
+        "Z": 232
+      },
+      "Duration": 1
+    },
+    {
+      "Id": "GlobalTransformNpcKeyframe",
+      "Selector": {
+        "SelectorId": "Chicken"
+      },
+      "TargetTransform": {
+        "X": 100,
+        "Y": 127,
+        "Z": 232,
+        "Roll": 90
+      },
+      "Duration": 1
+    },
+    {
+      "Id": "GlobalTransformNpcKeyframe",
+      "Selector": {
+        "SelectorId": "Chicken"
+      },
+      "TargetTransform": {
+        "X": 100,
+        "Y": 124,
+        "Z": 232,
+        "Roll": 180
+      },
+      "Duration": 1
+    },
+    {
+      "Id": "GlobalTransformNpcKeyframe",
+      "Selector": {
+        "SelectorId": "Chicken"
+      },
+      "TargetTransform": {
+        "X": 97,
+        "Y": 123,
+        "Z": 232,
+        "Roll": 0
+      },
+      "Duration": 1,
+      "Easing": "Linear"
     }
   ]
 }

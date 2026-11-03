@@ -14,18 +14,25 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.codec.validation.ValidatorCache;
 import com.hypixel.hytale.codec.validation.Validators;
+import com.hypixel.hytale.component.*;
+import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import lombok.Getter;
 import net.lordimass.assets.keyframes.CameraKeyframe;
 import net.lordimass.assets.keyframes.SequenceContext;
 import net.lordimass.assets.keyframes.SequenceKeyframe;
+import net.lordimass.components.Ephemeral;
+import net.lordimass.components.SequenceEntityComponent;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public abstract class SequenceAsset implements JsonAssetWithMap<String, DefaultAssetMap<String, SequenceAsset>> {
@@ -126,9 +133,23 @@ public abstract class SequenceAsset implements JsonAssetWithMap<String, DefaultA
     private void onComplete(SequenceContext ctx, @Nullable Runnable onComplete) {
         ctx.unregister();
 
-        // Tidy up
+        // Clean up any spawned entities
+        Store<EntityStore> store = ctx.world().getEntityStore().getStore();
+        store.forEachEntityParallel(
+            Query.and(Ephemeral.getComponentType(), SequenceEntityComponent.getComponentType()),
+            (i, chunk, commandBuffer) -> forEachEntityParallel(ctx, i, chunk, commandBuffer)
+        );
 
         if (onComplete != null) onComplete.run();
+    }
+
+    private static void forEachEntityParallel(SequenceContext ctx, int i, ArchetypeChunk<EntityStore> chunk, CommandBuffer<EntityStore> commandBuffer) {
+        // Only clean up entities for this current sequence.
+        var seqEntityComp = chunk.getComponent(i, SequenceEntityComponent.getComponentType());
+        assert seqEntityComp != null;
+        if (!seqEntityComp.getSequenceId().equals(ctx.sequenceId())) return;
+
+        commandBuffer.removeEntity(chunk.getReferenceTo(i), RemoveReason.REMOVE);
     }
 
     public void play(@Nonnull World world, @Nullable PlayerRef playerRef) {
