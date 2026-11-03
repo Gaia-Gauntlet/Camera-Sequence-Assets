@@ -82,6 +82,11 @@ public class GlobalTransformNpcKeyframe extends DelayKeyframe {
         var transformComp = chunk.getComponent(i, TransformComponent.getComponentType());
         assert transformComp != null;
         var startTransform = transformComp.getTransform();
+        var endTransform = targetTransform.clone();
+        if (relativeToNpc) {
+            endTransform.setPosition(new Vector3d(startTransform.getPosition()).add(targetTransform.getPosition()));
+            endTransform.setRotation(new Rotation3f(startTransform.getRotation()).add(targetTransform.getRotation()));
+        }
 
         buffer.addComponent(
             chunk.getReferenceTo(i),
@@ -89,7 +94,7 @@ public class GlobalTransformNpcKeyframe extends DelayKeyframe {
             new TransformingComponent(
                 start, end,
                 easing,
-                startTransform, targetTransform,
+                startTransform, endTransform,
                 onCompletion
             )
         );

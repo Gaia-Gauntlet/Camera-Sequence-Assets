@@ -33,24 +33,13 @@
         "SelectorId": "Chicken"
       },
       "TargetTransform": {
-        "X": 97,
-        "Y": 127,
-        "Z": 232
-      },
-      "Duration": 1
-    },
-    {
-      "Id": "GlobalTransformNpcKeyframe",
-      "Selector": {
-        "SelectorId": "Chicken"
-      },
-      "TargetTransform": {
-        "X": 100,
-        "Y": 127,
-        "Z": 232,
+        "X": 0,
+        "Y": 3,
+        "Z": 0,
         "Roll": 90
       },
-      "Duration": 1
+      "Duration": 1,
+      "RelativeToNpc": true
     },
     {
       "Id": "GlobalTransformNpcKeyframe",
@@ -58,26 +47,42 @@
         "SelectorId": "Chicken"
       },
       "TargetTransform": {
-        "X": 100,
-        "Y": 124,
-        "Z": 232,
-        "Roll": 180
-      },
-      "Duration": 1
-    },
-    {
-      "Id": "GlobalTransformNpcKeyframe",
-      "Selector": {
-        "SelectorId": "Chicken"
-      },
-      "TargetTransform": {
-        "X": 97,
-        "Y": 123,
-        "Z": 232,
-        "Roll": 0
+        "X": 3,
+        "Y": 0,
+        "Z": 0,
+        "Roll": 90
       },
       "Duration": 1,
-      "Easing": "Linear"
+      "RelativeToNpc": true
+    },
+    {
+      "Id": "GlobalTransformNpcKeyframe",
+      "Selector": {
+        "SelectorId": "Chicken"
+      },
+      "TargetTransform": {
+        "X": 0,
+        "Y": -2.5,
+        "Z": 0,
+        "Roll": 90
+      },
+      "Duration": 1,
+      "RelativeToNpc": true
+    },
+    {
+      "Id": "GlobalTransformNpcKeyframe",
+      "Selector": {
+        "SelectorId": "Chicken"
+      },
+      "TargetTransform": {
+        "X": -3,
+        "Y": -0.5,
+        "Z": 0,
+        "Roll": 90
+      },
+      "Duration": 1,
+      "Easing": "Linear",
+      "RelativeToNpc": true
     }
   ]
 }

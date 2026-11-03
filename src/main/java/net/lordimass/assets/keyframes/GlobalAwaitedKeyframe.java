@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 public abstract class GlobalAwaitedKeyframe extends GlobalKeyframe {
 
     @Nonnull public static final BuilderCodec<@NotNull GlobalAwaitedKeyframe> ABSTRACT_CODEC = BuilderCodec
-        .abstractBuilder(GlobalAwaitedKeyframe.class)
+        .abstractBuilder(GlobalAwaitedKeyframe.class, GlobalKeyframe.ABSTRACT_CODEC)
         .documentation("A keyframe that may take time to execute.")
         .appendInherited(new KeyedCodec<>("WaitForCompletion", Codec.BOOLEAN),
             (c, v) -> c.waitForCompletion = v,
