@@ -1,0 +1,30 @@
+{
+  "Type": "GlobalSequence",
+  "Keyframes": [
+    {
+      "Id": "GlobalSpawnNpcKeyframe",
+      "Role": "Chicken_Undead",
+      "Ephemeral": true,
+      "Frozen": true,
+      "NpcSelector": {
+        "SelectorId": "Chicken"
+      },
+      "Transform": {
+        "X": 97,
+        "Y": 125,
+        "Z": 232
+      }
+    },
+    {
+      "Id": "GlobalTransformNpcKeyframe",
+      "RelativeToNpc": true,
+      "TargetTransform": {
+        "X": 10
+      },
+      "Selector": {
+        "SelectorId": "Chicken"
+      },
+      "Duration": 5
+    }
+  ]
+}

@@ -35,13 +35,15 @@ public class TransformingEntitySystem extends EntityTickingSystem<EntityStore> {
             return;
         }
 
-        var current = System.nanoTime();
-        var start = transformingComp.getStartNanos();
-        var end = transformingComp.getEndNanos();
-        double t = ((double) (current - start)) / (end - start);
+        long current = System.nanoTime();
+        long start = transformingComp.getStartNanos();
+        long end = transformingComp.getEndNanos();
+        double elapsed = current - start;
+        double length = end - start;
+        double t = elapsed / length;
 
         var newTransform = TransformUtils.interpolate(
-            transformComp.getTransform(),
+            transformingComp.getStartTransform(),
             transformingComp.getEndTransform(),
             t,
             transformingComp.getEasing()

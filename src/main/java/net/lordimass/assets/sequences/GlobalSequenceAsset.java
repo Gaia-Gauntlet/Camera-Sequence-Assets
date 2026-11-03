@@ -6,6 +6,7 @@ import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.codec.validation.Validators;
 import net.lordimass.assets.keyframes.GlobalKeyframe;
 import net.lordimass.assets.keyframes.SequenceContext;
+import net.lordimass.assets.keyframes.SequenceKeyframe;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -23,7 +24,7 @@ public class GlobalSequenceAsset extends SequenceAsset {
                 SequenceAsset.ABSTRACT_CODEC
             )
             .appendInherited(new KeyedCodec<>("Keyframes", new ArrayCodec<>(GlobalKeyframe.CODEC, GlobalKeyframe[]::new)),
-                (asset, keyframes) -> asset.keyframes = keyframes,
+                (asset, keyframes) -> asset.keyframes = keyframes != null ? keyframes : new SequenceKeyframe[0],
                 SequenceAsset::getKeyframes,
                 (a, b) -> a.keyframes = b.keyframes
             )

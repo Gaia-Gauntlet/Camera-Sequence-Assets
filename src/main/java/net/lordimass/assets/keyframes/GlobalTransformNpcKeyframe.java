@@ -3,8 +3,11 @@ package net.lordimass.assets.keyframes;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.codec.validation.Validators;
+import com.hypixel.hytale.codec.validation.validator.NonNullValidator;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.protocol.EasingType;
@@ -33,6 +36,7 @@ public class GlobalTransformNpcKeyframe extends DelayKeyframe {
             c -> c.selector,
             (a, b) -> a.selector = b.selector)
         .documentation("Selector for the NPC(s) to move")
+        .addValidator(Validators.nonNull())
         .add()
         .appendInherited(new KeyedCodec<>("TargetTransform", Transform.CODEC_DEGREES),
             (c, v) -> c.targetTransform = v,
@@ -81,16 +85,20 @@ public class GlobalTransformNpcKeyframe extends DelayKeyframe {
 
         var transformComp = chunk.getComponent(i, TransformComponent.getComponentType());
         assert transformComp != null;
-        var startTransform = transformComp.getTransform();
+        var startTransform = transformComp.getTransform().clone();
         var endTransform = targetTransform.clone();
         if (relativeToNpc) {
             endTransform.setPosition(new Vector3d(startTransform.getPosition()).add(targetTransform.getPosition()));
             endTransform.setRotation(new Rotation3f(startTransform.getRotation()).add(targetTransform.getRotation()));
         }
 
+        Ref<EntityStore> ref = chunk.getReferenceTo(i);
+        if (chunk.getComponent(i, TransformingComponent.getComponentType()) != null) {
+            buffer.removeComponent(ref, TransformingComponent.getComponentType());
+        }
+
         buffer.addComponent(
-            chunk.getReferenceTo(i),
-            TransformingComponent.getComponentType(),
+            ref, TransformingComponent.getComponentType(),
             new TransformingComponent(
                 start, end,
                 easing,
