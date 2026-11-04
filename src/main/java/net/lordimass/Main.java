@@ -78,6 +78,7 @@ public class Main extends JavaPlugin {
         GlobalKeyframe.CODEC.register("SpawnNpc", GlobalSpawnNpcKeyframe.class, GlobalSpawnNpcKeyframe.CODEC);
         GlobalKeyframe.CODEC.register("TransformNpc", GlobalTransformNpcKeyframe.class, GlobalTransformNpcKeyframe.CODEC);
         GlobalKeyframe.CODEC.register("PlaySequence", PlaySequenceKeyframe.class, PlaySequenceKeyframe.CODEC);
+        GlobalKeyframe.CODEC.register("NpcAnimation", GlobalNpcAnimationKeyframe.class, GlobalNpcAnimationKeyframe.CODEC);
 
         SequenceKeyframe.CODEC.register("Camera", CameraKeyframe.Keyframe.class, CameraKeyframe.Keyframe.CODEC);
         SequenceKeyframe.CODEC.register("CameraLookingAt", CameraKeyframe.KeyframeLookingAt.class, CameraKeyframe.KeyframeLookingAt.CODEC);

@@ -90,7 +90,8 @@
         "X": 97,
         "Y": 123,
         "Z": 232
-      }
+      },
+      "SequenceEphemeral": true
     },
     {
       "Id": "TransformNpc",

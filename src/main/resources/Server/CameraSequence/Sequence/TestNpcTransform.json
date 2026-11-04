@@ -13,7 +13,8 @@
         "X": 97,
         "Y": 125,
         "Z": 232
-      }
+      },
+      "SequenceEphemeral": true
     },
     {
       "Id": "TransformNpc",
@@ -24,7 +25,16 @@
       "Selector": {
         "SelectorId": "Chicken"
       },
-      "Duration": 5
+      "Duration": 2
+    },
+    {
+      "Id": "NpcAnimation",
+      "Selector": {
+        "SelectorId": "Chicken"
+      },
+      "EntityAnimationId": "Death",
+      "AnimationSlot": "ServerAction",
+      "Duration": 0.5
     }
   ]
 }
