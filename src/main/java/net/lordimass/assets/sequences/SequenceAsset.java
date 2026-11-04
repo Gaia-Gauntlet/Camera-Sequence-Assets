@@ -36,7 +36,7 @@ import java.util.UUID;
 public abstract class SequenceAsset implements JsonAssetWithMap<String, DefaultAssetMap<String, SequenceAsset>> {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-    public static final String ASSET_PATH = "CameraSequence/CameraSequence";
+    public static final String ASSET_PATH = "CameraSequence/Sequence";
 
     private static AssetStore<String, SequenceAsset, DefaultAssetMap<String, SequenceAsset>> assetStore;
 

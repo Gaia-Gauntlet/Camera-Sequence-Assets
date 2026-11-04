@@ -1,8 +1,8 @@
 {
-  "Type": "CameraSequence",
+  "Type": "Camera",
   "Keyframes": [
     {
-      "Id": "CameraKeyframe",
+      "Id": "CameraFrame",
       "RelativeToPlayer": true,
       "Position": {
         "X": 4,
@@ -17,19 +17,19 @@
       "DepthOfFieldSettings": "TestDepthOfField"
     },
     {
-      "Id": "MessageKeyframe",
+      "Id": "Message",
       "Message": "Test!"
     },
     {
-      "Id": "SoundEventKeyframe",
+      "Id": "SoundEvent",
       "SoundEvent": "SFX_Debris_Metal_Impact"
     },
     {
-      "Id": "DelayKeyframe",
+      "Id": "Delay",
       "Duration": 1
     },
     {
-      "Id": "CameraKeyframe",
+      "Id": "CameraFrame",
       "RelativeToPlayer": true,
       "Position": {
         "X": 0,
@@ -45,7 +45,7 @@
       "DepthOfFieldSettings": "TestDepthOfField"
     },
     {
-      "Id": "CameraKeyframe",
+      "Id": "CameraFrame",
       "RelativeToPlayer": true,
       "Position": {
         "X": -4,
@@ -61,7 +61,7 @@
       "DepthOfFieldSettings": "TestDepthOfField"
     },
     {
-      "Id": "CameraKeyframe",
+      "Id": "CameraFrame",
       "RelativeToPlayer": true,
       "Easing": "BackIn",
       "Look": {
@@ -77,7 +77,7 @@
       "DepthOfFieldSettings": "TestDepthOfField"
     },
     {
-      "Id": "CameraKeyframe",
+      "Id": "CameraFrame",
       "RelativeToPlayer": true,
       "Position": {
         "X": 4,
@@ -92,7 +92,7 @@
       "DepthOfFieldSettings": "TestDepthOfField"
     },
     {
-      "Id": "CameraKeyframe",
+      "Id": "CameraFrame",
       "Look": {
         "Yaw": 180
       },

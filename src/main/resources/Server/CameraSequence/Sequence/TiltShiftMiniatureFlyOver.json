@@ -1,8 +1,8 @@
 {
-  "Type": "CameraSequence",
+  "Type": "Camera",
   "Keyframes": [
     {
-      "Id": "CameraKeyframe",
+      "Id": "CameraFrame",
       "RelativeToPlayer": true,
       "Position": {
         "X": 0,
@@ -14,7 +14,7 @@
       }
     },
     {
-      "Id": "CameraKeyframe",
+      "Id": "CameraFrame",
       "RelativeToPlayer": true,
       "Duration": 1,
       "Position": {
@@ -27,7 +27,7 @@
       "Fov": 20
     },
     {
-      "Id": "CameraKeyframe",
+      "Id": "CameraFrame",
       "RelativeToPlayer": true,
       "Position": {
         "Y": 250,

@@ -1,8 +1,8 @@
 {
-  "Type": "GlobalSequence",
+  "Type": "Global",
   "Keyframes": [
     {
-      "Id": "GlobalSpawnNpcKeyframe",
+      "Id": "SpawnNpc",
       "Role": "Chicken_Undead",
       "Ephemeral": true,
       "Frozen": true,
@@ -16,7 +16,7 @@
       }
     },
     {
-      "Id": "GlobalTransformNpcKeyframe",
+      "Id": "TransformNpc",
       "RelativeToNpc": true,
       "TargetTransform": {
         "X": 10

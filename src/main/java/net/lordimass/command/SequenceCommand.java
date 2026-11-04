@@ -20,16 +20,16 @@ import java.awt.*;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CameraSequenceCommand extends AbstractTargetPlayerCommand {
-    final RequiredArg<SequenceAsset> sequenceArg = withRequiredArg("sequence", "The ID of the camera sequence asset to play back",
-        new AssetArgumentType<>("CameraAsset", SequenceAsset.class,
-            "Camera Asset"));
+public class SequenceCommand extends AbstractTargetPlayerCommand {
+    final RequiredArg<SequenceAsset> sequenceArg = withRequiredArg("sequence", "The ID of the sequence asset to play back",
+        new AssetArgumentType<>("SequenceAsset", SequenceAsset.class,
+            "Sequence Asset"));
     final OptionalArg<Integer> keyFrameArg = withOptionalArg("Keyframe", "Keyframe to jump to", ArgTypes.INTEGER);;
     final FlagArg globalArg = withFlagArg("Global", "Whether to play this sequence globally, or just to the target player.");
 
-    public CameraSequenceCommand() {
-        super("camerasequence", "Play back a camera sequence asset.");
-        this.addAliases("cinematic");
+    public SequenceCommand() {
+        super("sequence", "Play back a camera sequence asset.");
+        this.addAliases("cinematic", "camerasequence");
 
         addSubCommand(new NewCommand());
         addSubCommand(new RemoveCommand());
@@ -43,7 +43,7 @@ public class CameraSequenceCommand extends AbstractTargetPlayerCommand {
         var originalSeq = sequenceArg.get(commandContext);
         if (originalSeq == null) {
             commandContext.sendMessage(
-                    Message.raw("Couldn't find camera sequence '" + sequenceArg.get(commandContext).getId() + "'")
+                    Message.raw("Couldn't find sequence '" + sequenceArg.get(commandContext).getId() + "'")
                             .color(Color.RED));
             return;
         }
@@ -52,7 +52,7 @@ public class CameraSequenceCommand extends AbstractTargetPlayerCommand {
         var frame = keyFrameArg.get(commandContext);
 
         Runnable onComplete = () -> {
-            commandContext.sendMessage(Message.raw("Camera sequence completed").color(Color.GREEN));
+            commandContext.sendMessage(Message.raw("Sequence completed").color(Color.GREEN));
         };
 
         if (frame != null) { // play from the single frame instead

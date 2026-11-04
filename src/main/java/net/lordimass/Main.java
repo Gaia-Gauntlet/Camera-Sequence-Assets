@@ -12,7 +12,7 @@ import net.lordimass.assets.keyframes.*;
 import net.lordimass.assets.sequences.CameraSequenceAsset;
 import net.lordimass.assets.sequences.GlobalSequenceAsset;
 import net.lordimass.assets.sequences.SequenceAsset;
-import net.lordimass.command.CameraSequenceCommand;
+import net.lordimass.command.SequenceCommand;
 import net.lordimass.components.Ephemeral;
 import net.lordimass.components.TransformingComponent;
 import net.lordimass.components.SequenceEntityComponent;
@@ -62,36 +62,36 @@ public class Main extends JavaPlugin {
 
         getEntityStoreRegistry().registerSystem(new TransformingEntitySystem());
 
-        SequenceAsset.CODEC.register("CameraSequence", CameraSequenceAsset.class, CameraSequenceAsset.CODEC);
-        SequenceAsset.CODEC.register("GlobalSequence", GlobalSequenceAsset.class, GlobalSequenceAsset.CODEC);
+        SequenceAsset.CODEC.register("Camera", CameraSequenceAsset.class, CameraSequenceAsset.CODEC);
+        SequenceAsset.CODEC.register("Global", GlobalSequenceAsset.class, GlobalSequenceAsset.CODEC);
 
-        CameraKeyframe.CODEC.register("CameraKeyframe", CameraKeyframe.Keyframe.class, CameraKeyframe.Keyframe.CODEC);
-        CameraKeyframe.CODEC.register("CameraKeyframeLookingAt", CameraKeyframe.KeyframeLookingAt.class, CameraKeyframe.KeyframeLookingAt.CODEC);
-        CameraKeyframe.CODEC.register("DelayKeyframe", DelayKeyframe.class, DelayKeyframe.CODEC);
-        CameraKeyframe.CODEC.register("MessageKeyframe", MessageKeyframe.class, MessageKeyframe.CODEC);
-        CameraKeyframe.CODEC.register("SoundEventKeyframe", SoundEventKeyframe.class, SoundEventKeyframe.CODEC);
-        CameraKeyframe.CODEC.register("PlaySequenceKeyframe", PlaySequenceKeyframe.class, PlaySequenceKeyframe.CODEC);
+        CameraKeyframe.CODEC.register("CameraFrame", CameraKeyframe.Keyframe.class, CameraKeyframe.Keyframe.CODEC);
+        CameraKeyframe.CODEC.register("CameraFrameLookingAt", CameraKeyframe.KeyframeLookingAt.class, CameraKeyframe.KeyframeLookingAt.CODEC);
+        CameraKeyframe.CODEC.register("Delay", DelayKeyframe.class, DelayKeyframe.CODEC);
+        CameraKeyframe.CODEC.register("Message", MessageKeyframe.class, MessageKeyframe.CODEC);
+        CameraKeyframe.CODEC.register("SoundEvent", SoundEventKeyframe.class, SoundEventKeyframe.CODEC);
+        CameraKeyframe.CODEC.register("PlaySequence", PlaySequenceKeyframe.class, PlaySequenceKeyframe.CODEC);
 
-        GlobalKeyframe.CODEC.register("DelayKeyframe", DelayKeyframe.class, DelayKeyframe.CODEC);
-        GlobalKeyframe.CODEC.register("MessageKeyframe", MessageKeyframe.class, MessageKeyframe.CODEC);
-        GlobalKeyframe.CODEC.register("SoundEventKeyframe", SoundEventKeyframe.class, SoundEventKeyframe.CODEC);
-        GlobalKeyframe.CODEC.register("GlobalSpawnNpcKeyframe", GlobalSpawnNpcKeyframe.class, GlobalSpawnNpcKeyframe.CODEC);
-        GlobalKeyframe.CODEC.register("GlobalTransformNpcKeyframe", GlobalTransformNpcKeyframe.class, GlobalTransformNpcKeyframe.CODEC);
-        GlobalKeyframe.CODEC.register("PlaySequenceKeyframe", PlaySequenceKeyframe.class, PlaySequenceKeyframe.CODEC);
+        GlobalKeyframe.CODEC.register("Delay", DelayKeyframe.class, DelayKeyframe.CODEC);
+        GlobalKeyframe.CODEC.register("Message", MessageKeyframe.class, MessageKeyframe.CODEC);
+        GlobalKeyframe.CODEC.register("SoundEvent", SoundEventKeyframe.class, SoundEventKeyframe.CODEC);
+        GlobalKeyframe.CODEC.register("SpawnNpc", GlobalSpawnNpcKeyframe.class, GlobalSpawnNpcKeyframe.CODEC);
+        GlobalKeyframe.CODEC.register("TransformNpc", GlobalTransformNpcKeyframe.class, GlobalTransformNpcKeyframe.CODEC);
+        GlobalKeyframe.CODEC.register("PlaySequence", PlaySequenceKeyframe.class, PlaySequenceKeyframe.CODEC);
 
-        SequenceKeyframe.CODEC.register("CameraKeyframe", CameraKeyframe.Keyframe.class, CameraKeyframe.Keyframe.CODEC);
-        SequenceKeyframe.CODEC.register("CameraKeyframeLookingAt", CameraKeyframe.KeyframeLookingAt.class, CameraKeyframe.KeyframeLookingAt.CODEC);
-        SequenceKeyframe.CODEC.register("DelayKeyframe", DelayKeyframe.class, DelayKeyframe.CODEC);
-        SequenceKeyframe.CODEC.register("MessageKeyframe", MessageKeyframe.class, MessageKeyframe.CODEC);
-        SequenceKeyframe.CODEC.register("SoundEventKeyframe", SoundEventKeyframe.class, SoundEventKeyframe.CODEC);
-        SequenceKeyframe.CODEC.register("PlaySequenceKeyframe", PlaySequenceKeyframe.class, PlaySequenceKeyframe.CODEC);
-        SequenceKeyframe.CODEC.register("GlobalSpawnNpcKeyframe", GlobalSpawnNpcKeyframe.class, GlobalSpawnNpcKeyframe.CODEC);
-        SequenceKeyframe.CODEC.register("GlobalTransformNpcKeyframe", GlobalTransformNpcKeyframe.class, GlobalTransformNpcKeyframe.CODEC);
+        SequenceKeyframe.CODEC.register("Camera", CameraKeyframe.Keyframe.class, CameraKeyframe.Keyframe.CODEC);
+        SequenceKeyframe.CODEC.register("CameraLookingAt", CameraKeyframe.KeyframeLookingAt.class, CameraKeyframe.KeyframeLookingAt.CODEC);
+        SequenceKeyframe.CODEC.register("Delay", DelayKeyframe.class, DelayKeyframe.CODEC);
+        SequenceKeyframe.CODEC.register("Message", MessageKeyframe.class, MessageKeyframe.CODEC);
+        SequenceKeyframe.CODEC.register("SoundEvent", SoundEventKeyframe.class, SoundEventKeyframe.CODEC);
+        SequenceKeyframe.CODEC.register("PlaySequence", PlaySequenceKeyframe.class, PlaySequenceKeyframe.CODEC);
+        SequenceKeyframe.CODEC.register("SpawnNpc", GlobalSpawnNpcKeyframe.class, GlobalSpawnNpcKeyframe.CODEC);
+        SequenceKeyframe.CODEC.register("TransformNpc", GlobalTransformNpcKeyframe.class, GlobalTransformNpcKeyframe.CODEC);
 
         DepthOfFieldSettingsAsset.register(this);
 
         var commandRegistry = getCommandRegistry();
-        commandRegistry.registerCommand(new CameraSequenceCommand());
+        commandRegistry.registerCommand(new SequenceCommand());
         TriggerEffect.CODEC.register("TriggerCameraSequence", TriggerSequenceEffect.class, TriggerSequenceEffect.CODEC);
         Creditor.setup(this);
     }

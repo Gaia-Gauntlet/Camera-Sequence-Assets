@@ -1,13 +1,13 @@
 {
-  "Type": "GlobalSequence",
+  "Type": "Global",
   "Keyframes": [
     {
-      "Id": "PlaySequenceKeyframe",
+      "Id": "PlaySequence",
       "Sequence": {
-        "Type": "CameraSequence",
+        "Type": "Camera",
         "Keyframes": [
           {
-            "Id": "CameraKeyframe",
+            "Id": "CameraFrame",
             "Title": "Start at chicken spawn",
             "Position": {
               "X": 97,
@@ -19,7 +19,7 @@
             }
           },
           {
-            "Id": "CameraKeyframe",
+            "Id": "CameraFrame",
             "Position": {
               "Y": 126,
               "X": 97,
@@ -33,7 +33,7 @@
             }
           },
           {
-            "Id": "CameraKeyframe",
+            "Id": "CameraFrame",
             "Position": {
               "X": 100,
               "Y": 126,
@@ -47,7 +47,7 @@
             "RelativeToPlayer": false
           },
           {
-            "Id": "CameraKeyframe",
+            "Id": "CameraFrame",
             "Position": {
               "Y": 123.5,
               "X": 100,
@@ -61,7 +61,7 @@
             "Duration": 1
           },
           {
-            "Id": "CameraKeyframe",
+            "Id": "CameraFrame",
             "RelativeToPlayer": false,
             "Position": {
               "X": 97,
@@ -79,7 +79,7 @@
       "WaitForCompletion": false
     },
     {
-      "Id": "GlobalSpawnNpcKeyframe",
+      "Id": "SpawnNpc",
       "Role": "Chicken_Undead",
       "Ephemeral": true,
       "Frozen": true,
@@ -93,7 +93,7 @@
       }
     },
     {
-      "Id": "GlobalTransformNpcKeyframe",
+      "Id": "TransformNpc",
       "Selector": {
         "SelectorId": "Chicken"
       },
@@ -107,7 +107,7 @@
       "RelativeToNpc": true
     },
     {
-      "Id": "GlobalTransformNpcKeyframe",
+      "Id": "TransformNpc",
       "Selector": {
         "SelectorId": "Chicken"
       },
@@ -121,7 +121,7 @@
       "RelativeToNpc": true
     },
     {
-      "Id": "GlobalTransformNpcKeyframe",
+      "Id": "TransformNpc",
       "Selector": {
         "SelectorId": "Chicken"
       },
@@ -136,7 +136,7 @@
       "Easing": "Linear"
     },
     {
-      "Id": "GlobalTransformNpcKeyframe",
+      "Id": "TransformNpc",
       "Selector": {
         "SelectorId": "Chicken"
       },
