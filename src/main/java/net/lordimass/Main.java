@@ -13,7 +13,7 @@ import net.lordimass.assets.sequences.CameraSequenceAsset;
 import net.lordimass.assets.sequences.GlobalSequenceAsset;
 import net.lordimass.assets.sequences.SequenceAsset;
 import net.lordimass.command.SequenceCommand;
-import net.lordimass.components.Ephemeral;
+import net.lordimass.components.SequenceEphemeral;
 import net.lordimass.components.TransformingComponent;
 import net.lordimass.components.SequenceEntityComponent;
 import net.lordimass.resources.WorldSequenceStore;
@@ -53,8 +53,8 @@ public class Main extends JavaPlugin {
             WorldSequenceStore.class, WorldSequenceStore.ID, WorldSequenceStore.CODEC
         ));
 
-        Ephemeral.setComponentType(getEntityStoreRegistry().registerComponent(
-            Ephemeral.class, "Ephemeral", Ephemeral.CODEC));
+        SequenceEphemeral.setComponentType(getEntityStoreRegistry().registerComponent(
+            SequenceEphemeral.class, "SequenceEphemeral", SequenceEphemeral.CODEC));
         SequenceEntityComponent.setComponentType(getEntityStoreRegistry().registerComponent(
             SequenceEntityComponent.class, "SequenceEntity", SequenceEntityComponent.CODEC));
         TransformingComponent.setComponentType(getEntityStoreRegistry().registerComponent(

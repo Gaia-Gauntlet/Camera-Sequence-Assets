@@ -16,6 +16,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+// This isn't actually used right now but theoretically keeps track of all currently running
+// sequences in a world.
+
 public class WorldSequenceStore implements Resource<EntityStore> {
     public static final String ID = "WorldSequenceStore";
     @Getter @Setter private static ResourceType<EntityStore, WorldSequenceStore> resourceType;

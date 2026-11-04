@@ -25,7 +25,7 @@ import lombok.Getter;
 import net.lordimass.assets.keyframes.CameraKeyframe;
 import net.lordimass.assets.keyframes.SequenceContext;
 import net.lordimass.assets.keyframes.SequenceKeyframe;
-import net.lordimass.components.Ephemeral;
+import net.lordimass.components.SequenceEphemeral;
 import net.lordimass.components.SequenceEntityComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -138,7 +138,7 @@ public abstract class SequenceAsset implements JsonAssetWithMap<String, DefaultA
         // Clean up any spawned entities
         Store<EntityStore> store = ctx.world().getEntityStore().getStore();
         store.forEachEntityParallel(
-            Query.and(Ephemeral.getComponentType(), SequenceEntityComponent.getComponentType()),
+            Query.and(SequenceEphemeral.getComponentType(), SequenceEntityComponent.getComponentType()),
             (i, chunk, commandBuffer) -> cleanUpEntity(ctx, i, chunk, commandBuffer)
         );
 

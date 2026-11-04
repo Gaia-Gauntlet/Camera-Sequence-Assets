@@ -9,7 +9,6 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
-import com.hypixel.hytale.math.vector.Vector3dUtil;
 import com.hypixel.hytale.server.core.entity.Frozen;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -17,7 +16,7 @@ import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.validators.NPCRoleValidator;
 import lombok.Getter;
-import net.lordimass.components.Ephemeral;
+import net.lordimass.components.SequenceEphemeral;
 import net.lordimass.components.NpcSelector;
 import net.lordimass.components.SequenceEntityComponent;
 import org.jetbrains.annotations.NotNull;
@@ -52,7 +51,7 @@ public class GlobalSpawnNpcKeyframe extends GlobalKeyframe {
             c -> c.transform,
             (a, b) -> a.transform = b.transform)
         .add()
-        .appendInherited(new KeyedCodec<>("Ephemeral", Codec.BOOLEAN),
+        .appendInherited(new KeyedCodec<>("SequenceEphemeral", Codec.BOOLEAN),
             (c, v) -> c.ephemeral = v,
             c -> c.ephemeral,
             (a, b) -> a.ephemeral = b.ephemeral)
@@ -92,7 +91,7 @@ public class GlobalSpawnNpcKeyframe extends GlobalKeyframe {
 
     private void preAddToWorld(SequenceContext ctx, NPCEntity npc, Holder<EntityStore> holder, Store<EntityStore> store) {
         if (frozen) holder.addComponent(Frozen.getComponentType(), Frozen.get());
-        if (ephemeral) holder.addComponent(Ephemeral.getComponentType(), Ephemeral.get());
+        if (ephemeral) holder.addComponent(SequenceEphemeral.getComponentType(), SequenceEphemeral.get());
 
         holder.addComponent(SequenceEntityComponent.getComponentType(), new SequenceEntityComponent(
             ctx.sequenceId(), selector
