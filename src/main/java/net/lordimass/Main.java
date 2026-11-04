@@ -79,6 +79,15 @@ public class Main extends JavaPlugin {
         GlobalKeyframe.CODEC.register("GlobalTransformNpcKeyframe", GlobalTransformNpcKeyframe.class, GlobalTransformNpcKeyframe.CODEC);
         GlobalKeyframe.CODEC.register("PlaySequenceKeyframe", PlaySequenceKeyframe.class, PlaySequenceKeyframe.CODEC);
 
+        SequenceKeyframe.CODEC.register("CameraKeyframe", CameraKeyframe.Keyframe.class, CameraKeyframe.Keyframe.CODEC);
+        SequenceKeyframe.CODEC.register("CameraKeyframeLookingAt", CameraKeyframe.KeyframeLookingAt.class, CameraKeyframe.KeyframeLookingAt.CODEC);
+        SequenceKeyframe.CODEC.register("DelayKeyframe", DelayKeyframe.class, DelayKeyframe.CODEC);
+        SequenceKeyframe.CODEC.register("MessageKeyframe", MessageKeyframe.class, MessageKeyframe.CODEC);
+        SequenceKeyframe.CODEC.register("SoundEventKeyframe", SoundEventKeyframe.class, SoundEventKeyframe.CODEC);
+        SequenceKeyframe.CODEC.register("PlaySequenceKeyframe", PlaySequenceKeyframe.class, PlaySequenceKeyframe.CODEC);
+        SequenceKeyframe.CODEC.register("GlobalSpawnNpcKeyframe", GlobalSpawnNpcKeyframe.class, GlobalSpawnNpcKeyframe.CODEC);
+        SequenceKeyframe.CODEC.register("GlobalTransformNpcKeyframe", GlobalTransformNpcKeyframe.class, GlobalTransformNpcKeyframe.CODEC);
+
         DepthOfFieldSettingsAsset.register(this);
 
         var commandRegistry = getCommandRegistry();
