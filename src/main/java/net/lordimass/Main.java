@@ -93,7 +93,7 @@ public class Main extends JavaPlugin {
 
         var commandRegistry = getCommandRegistry();
         commandRegistry.registerCommand(new SequenceCommand());
-        TriggerEffect.CODEC.register("TriggerCameraSequence", TriggerSequenceEffect.class, TriggerSequenceEffect.CODEC);
+        TriggerEffect.CODEC.register("TriggerSequence", TriggerSequenceEffect.class, TriggerSequenceEffect.CODEC);
         Creditor.setup(this);
     }
 

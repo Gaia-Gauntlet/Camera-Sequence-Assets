@@ -1,4 +1,5 @@
-customUI.triggerVolumeEffectEditor.field.TriggerCameraSequence.CameraSequence = Camera Sequence
+customUI.triggerVolumeEffectEditor.field.TriggerSequence.Sequence = Sequence
+customUI.triggerVolumeEffectEditor.field.TriggerSequence.Global = Global
 
 command.camerasequence.packRequired = No target pack specified. Specify --pack to select one.
 

@@ -22,15 +22,13 @@ public class TriggerSequenceEffect extends TriggerEffect {
         .builder(TriggerSequenceEffect.class, TriggerSequenceEffect::new, TriggerEffect.BASE_CODEC)
         .append(new KeyedCodec<>("Sequence", Codec.STRING),
             (s, v) -> s.sequenceKey = v,
-            TriggerSequenceEffect::getSequenceKey
-            )
+            TriggerSequenceEffect::getSequenceKey)
         .documentation("The ID of a Sequence asset to play.")
         .addValidator(SequenceAsset.VALIDATOR_CACHE.getValidator())
         .add()
         .append(new KeyedCodec<>("Global", Codec.BOOLEAN),
             (s, v) -> s.global = v,
-            TriggerSequenceEffect::isGlobal
-        )
+            TriggerSequenceEffect::isGlobal)
         .documentation("Whether to play the sequence globally, or just to the player who triggered the effect")
         .add()
         .build();
