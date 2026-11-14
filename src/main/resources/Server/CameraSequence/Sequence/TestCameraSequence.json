@@ -25,6 +25,11 @@
       "SoundEvent": "SFX_Debris_Metal_Impact"
     },
     {
+      "Id": "SpawnParticle",
+      "ParticleName": "MemoryUnlock",
+      "RelativeToPlayer": true
+    },
+    {
       "Id": "Delay",
       "Duration": 1
     },

@@ -31,7 +31,7 @@ public class GlobalSpawnNpcKeyframe extends GlobalKeyframe {
 
     @Nonnull
     public static final BuilderCodec<@NotNull GlobalSpawnNpcKeyframe> CODEC = BuilderCodec
-        .builder(GlobalSpawnNpcKeyframe.class, GlobalSpawnNpcKeyframe::new)
+        .builder(GlobalSpawnNpcKeyframe.class, GlobalSpawnNpcKeyframe::new, GlobalKeyframe.ABSTRACT_CODEC)
         .documentation("Spawn an NPC")
         .appendInherited(new KeyedCodec<>("Role", Codec.STRING),
             (c, v) -> c.roleId = v,
