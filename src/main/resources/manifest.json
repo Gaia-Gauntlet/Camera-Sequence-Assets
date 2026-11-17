@@ -1,7 +1,7 @@
 {
     "Group": "net.lordimass",
     "Name": "CameraSequenceAssets",
-    "Version": "2.1.0",
+    "Version": "2.1.1",
     "Description": "Adds Sequence assets which can be used to define keyframe lists which can be played back to a players camera or the world using commands/trigger volumes. Designed with extensibility in mind.",
     "Authors": [
         {

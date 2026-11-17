@@ -65,6 +65,7 @@ public class GlobalNpcAnimationKeyframe extends DelayKeyframe {
         assert npc != null;
 
         var ref = chunk.getReferenceTo(i);
-        npc.playAnimation(ref, animationSlot, animationId, buffer);
+        if (npc.getWorld() == null) return;
+        npc.getWorld().execute(() -> npc.playAnimation(ref, animationSlot, animationId, buffer));
     }
 }
