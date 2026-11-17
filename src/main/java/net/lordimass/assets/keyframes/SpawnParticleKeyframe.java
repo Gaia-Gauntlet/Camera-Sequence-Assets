@@ -124,5 +124,7 @@ public class SpawnParticleKeyframe extends GlobalKeyframe {
                 maxDuration
             );
         }
+
+        if (onCompletion != null) onCompletion.run();
     }
 }
