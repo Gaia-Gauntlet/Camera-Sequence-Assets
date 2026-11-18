@@ -73,6 +73,7 @@ public class Main extends JavaPlugin {
         CameraKeyframe.CODEC.register("PlaySequence", PlaySequenceKeyframe.class, PlaySequenceKeyframe.CODEC);
         CameraKeyframe.CODEC.register("TeleportPlayer", TeleportPlayerKeyframe.class, TeleportPlayerKeyframe.CODEC);
         CameraKeyframe.CODEC.register("SpawnParticle", SpawnParticleKeyframe.class, SpawnParticleKeyframe.CODEC);
+        CameraKeyframe.CODEC.register("HidePlayer", HidePlayerKeyframe.class, HidePlayerKeyframe.CODEC);
 
         GlobalKeyframe.CODEC.register("Delay", DelayKeyframe.class, DelayKeyframe.CODEC);
         GlobalKeyframe.CODEC.register("Message", MessageKeyframe.class, MessageKeyframe.CODEC);
@@ -84,6 +85,7 @@ public class Main extends JavaPlugin {
         GlobalKeyframe.CODEC.register("NpcAnimation", GlobalNpcAnimationKeyframe.class, GlobalNpcAnimationKeyframe.CODEC);
         GlobalKeyframe.CODEC.register("TeleportPlayer", TeleportPlayerKeyframe.class, TeleportPlayerKeyframe.CODEC);
         GlobalKeyframe.CODEC.register("SpawnParticle", SpawnParticleKeyframe.class, SpawnParticleKeyframe.CODEC);
+        GlobalKeyframe.CODEC.register("HidePlayer", HidePlayerKeyframe.class, HidePlayerKeyframe.CODEC);
 
         SequenceKeyframe.CODEC.register("Camera", CameraKeyframe.Keyframe.class, CameraKeyframe.Keyframe.CODEC);
         SequenceKeyframe.CODEC.register("CameraLookingAt", CameraKeyframe.KeyframeLookingAt.class, CameraKeyframe.KeyframeLookingAt.CODEC);
@@ -96,6 +98,7 @@ public class Main extends JavaPlugin {
         SequenceKeyframe.CODEC.register("TransformNpc", GlobalTransformNpcKeyframe.class, GlobalTransformNpcKeyframe.CODEC);
         SequenceKeyframe.CODEC.register("TeleportPlayer", TeleportPlayerKeyframe.class, TeleportPlayerKeyframe.CODEC);
         SequenceKeyframe.CODEC.register("SpawnParticle", SpawnParticleKeyframe.class, SpawnParticleKeyframe.CODEC);
+        SequenceKeyframe.CODEC.register("HidePlayer", HidePlayerKeyframe.class, HidePlayerKeyframe.CODEC);
 
         DepthOfFieldSettingsAsset.register(this);
 
