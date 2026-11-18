@@ -21,8 +21,9 @@
       "Message": "Test!"
     },
     {
-      "Id": "SoundEvent",
-      "SoundEvent": "SFX_Debris_Metal_Impact"
+      "Id": "PlaySequence",
+      "Sequence": "TestSoundEventGlobalSequence",
+      "Global": true
     },
     {
       "Id": "SpawnParticle",
