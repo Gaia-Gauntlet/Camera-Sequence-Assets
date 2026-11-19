@@ -64,18 +64,21 @@ public class GlobalTransformNpcKeyframe extends DelayKeyframe {
     @Getter private boolean relativeToNpc;
     @Getter private EasingType easing = EasingType.Linear;
 
+    private boolean hasDoneCallback = false;
+
     @Override
     public void run(SequenceContext ctx, @Nullable Runnable onCompletion) {
         var store = ctx.world().getEntityStore().getStore();
         SequenceNpcUtils.applyToAllMatching(
             store, selector,
-            (i, chunk, buffer) -> startTransformation(onCompletion, i, chunk, buffer),
+            this::startTransformation,
             TransformComponent.getComponentType()
         );
+
+        super.run(ctx, onCompletion);
     }
 
     private void startTransformation(
-        Runnable onCompletion,
         int i,
         ArchetypeChunk<EntityStore> chunk,
         CommandBuffer<EntityStore> buffer
@@ -103,7 +106,7 @@ public class GlobalTransformNpcKeyframe extends DelayKeyframe {
                 start, end,
                 easing,
                 startTransform, endTransform,
-                onCompletion
+                null
             )
         );
     }

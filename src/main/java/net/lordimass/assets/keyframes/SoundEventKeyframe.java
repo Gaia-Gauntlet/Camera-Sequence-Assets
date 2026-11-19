@@ -26,7 +26,7 @@ public class SoundEventKeyframe extends DelayKeyframe {
             SoundEventKeyframe::getSoundEventKey,
             (a, b) -> a.soundEventKey = b.soundEventKey
         )
-        .addValidator(SoundEvent.VALIDATOR_CACHE.getValidator())
+        .addValidatorLate(SoundEvent.VALIDATOR_CACHE.getValidator()::late)
         .documentation("The sound event to play.")
         .add()
         .appendInherited(new KeyedCodec<>("SoundCategory", new EnumCodec<>(SoundCategory.class)),
@@ -63,6 +63,7 @@ public class SoundEventKeyframe extends DelayKeyframe {
                 playSound(playerRef, soundEventIndex);
             }
         }
+
         super.run(context, onCompletion);
     }
 

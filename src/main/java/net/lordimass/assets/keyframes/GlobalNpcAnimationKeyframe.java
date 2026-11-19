@@ -40,7 +40,7 @@ public class GlobalNpcAnimationKeyframe extends DelayKeyframe {
         .build();
 
     @Getter private NpcSelector selector;
-    @Getter private AnimationSlot animationSlot;
+    @Getter private AnimationSlot animationSlot = AnimationSlot.Status;
     @Getter private String animationId;
 
     @Override

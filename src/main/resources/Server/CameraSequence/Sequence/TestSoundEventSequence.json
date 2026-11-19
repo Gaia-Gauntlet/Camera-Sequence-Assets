@@ -1,0 +1,69 @@
+{
+  "Type": "Camera",
+  "Keyframes": [
+    {
+      "Id": "CameraFrame",
+      "RelativeToPlayer": false,
+      "Position": {
+        "X": 88,
+        "Y": 125,
+        "Z": 234
+      },
+      "Easing": "Linear",
+      "Look": {
+        "Pitch": -15,
+        "Yaw": 180
+      },
+      "Duration": 0,
+      "DepthOfFieldSettings": "TestDepthOfField"
+    },
+    {
+      "Id": "SoundEvent",
+      "SoundEvent": "SFX_Deployable_Totem_Heal_Spawn"
+    },
+    {
+      "Id": "Delay",
+      "Duration": 0.5
+    },
+    {
+      "Id": "PlaySequence",
+      "Sequence": {
+        "Type": "Camera",
+        "Keyframes": [
+          {
+            "Id": "CameraFrame",
+            "RelativeToPlayer": false,
+            "Position": {
+              "X": 88,
+              "Y": 130,
+              "Z": 234
+            },
+            "Easing": "Linear",
+            "Look": {
+              "Pitch": -15,
+              "Yaw": 180
+            },
+            "Duration": 0,
+            "DepthOfFieldSettings": "TestDepthOfField"
+          },
+          {
+            "Id": "Delay",
+            "Duration": 1
+          },
+          {
+            "Id": "Message",
+            "Message": "Beep!"
+          },
+          {
+            "Id": "Delay",
+            "Duration": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "Id": "Message",
+      "Message": "Boop!"
+    }
+  ]
+}

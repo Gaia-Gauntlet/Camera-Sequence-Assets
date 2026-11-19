@@ -1,9 +1,0 @@
-{
-  "Type": "Global",
-  "Keyframes": [
-    {
-      "Id": "SoundEvent",
-      "SoundEvent": "SFX_Explosion_Boomshroom_Barrel"
-    }
-  ]
-}

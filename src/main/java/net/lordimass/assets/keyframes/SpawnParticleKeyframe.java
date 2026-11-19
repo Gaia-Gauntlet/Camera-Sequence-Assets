@@ -39,7 +39,7 @@ public class SpawnParticleKeyframe extends GlobalKeyframe {
             (c, v) -> c.particleName = v,
             c -> c.particleName,
             (a, b) -> a.particleName = b.particleName)
-        .addValidator(new AssetKeyValidator<>(ParticleSystem::getAssetStore))
+        .addValidatorLate(ParticleSystem.VALIDATOR_CACHE.getValidator()::late)
         .add()
         .appendInherited(new KeyedCodec<>("TargetTransform", Transform.CODEC_DEGREES),
             (c, v) -> c.targetTransform = v,
