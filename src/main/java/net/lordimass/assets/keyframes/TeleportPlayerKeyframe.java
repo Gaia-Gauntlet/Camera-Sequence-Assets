@@ -1,5 +1,6 @@
 package net.lordimass.assets.keyframes;
 
+import com.hypixel.hytale.builtin.teleport.components.TeleportHistory;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
@@ -73,14 +74,22 @@ public class TeleportPlayerKeyframe extends GlobalKeyframe {
             var ref = targetPlayer.getReference();
             if (ref == null) continue;
             var store = ref.getStore();
+            var playerTransformComp = store.getComponent(ref, TransformComponent.getComponentType());
+            if (playerTransformComp == null) continue;
             if (relativeToPlayer) {
-                var playerTransformComp = store.getComponent(ref, TransformComponent.getComponentType());
-                if (playerTransformComp == null) continue;
                 calculatedTargetTransform.getPosition().add(playerTransformComp.getPosition());
                 calculatedTargetTransform.getRotation().add(playerTransformComp.getRotation());
             }
             var teleport = Teleport.createForPlayer(world, targetTransform);
             if (headRotation != null) teleport.setHeadRotation(headRotation);
+
+            final var history = store.ensureAndGetComponent(ref, TeleportHistory.getComponentType());
+            history.append(world,
+                new Vector3d(playerTransformComp.getPosition()),
+                new Rotation3f(playerTransformComp.getRotation()),
+                "Teleport Keyframe"
+            );
+
             store.addComponent(ref, Teleport.getComponentType(), teleport);
         }
 
