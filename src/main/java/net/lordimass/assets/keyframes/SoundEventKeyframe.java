@@ -79,9 +79,8 @@ public class SoundEventKeyframe extends DelayKeyframe {
                 store);
             return;
         }
-        SoundUtil.playLocalPlayerSoundEvent(
+        SoundUtil.playSoundEvent2dToPlayer(
             playerRef,
-            soundEventIndex,
             soundEventIndex,
             soundCategory
         );
