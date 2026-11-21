@@ -21,9 +21,6 @@
       "Message": "Test!"
     },
     {
-      "Id": "HidePlayer"
-    },
-    {
       "Id": "PlaySequence",
       "Sequence": "TestSoundEventGlobalSequence",
       "Global": true
@@ -112,10 +109,6 @@
       "Easing": "QuadIn",
       "Duration": 1,
       "DepthOfFieldSettings": "TestDepthOfField"
-    },
-    {
-      "Id": "HidePlayer",
-      "Hide": false
     }
   ],
   "BaseFov": 60,
